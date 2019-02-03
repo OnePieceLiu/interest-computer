@@ -1,0 +1,19 @@
+{
+  "name": "interest-computer",
+  "version": "1.0.0",
+  "description": "interest compute tool",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zhoupengqiang/interest-computer.git"
+  },
+  "author": "zhoupengqiang",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zhoupengqiang/interest-computer/issues"
+  },
+  "homepage": "https://github.com/zhoupengqiang/interest-computer#readme"
+}
