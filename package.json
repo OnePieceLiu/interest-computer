@@ -15,5 +15,11 @@
   "bugs": {
     "url": "https://github.com/zhoupengqiang/interest-computer/issues"
   },
-  "homepage": "https://github.com/zhoupengqiang/interest-computer#readme"
+  "homepage": "https://github.com/zhoupengqiang/interest-computer#readme",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "ioredis": "^4.6.2",
+    "koa": "^2.7.0",
+    "koa-router": "^7.4.0"
+  }
 }
