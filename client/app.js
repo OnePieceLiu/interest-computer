@@ -23,12 +23,6 @@ App({
       })
     }).then(res => {
       this.globalData.sessionid = res.data.sessionid
-
-      return request({
-        url: 'https://tencent.zhoupengqiang.cn/test'
-      })
-    }).then(res => {
-      console.log('test', res.data)
     }).catch(e => {
       console.log('err', e.data)
     })
