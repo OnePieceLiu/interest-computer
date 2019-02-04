@@ -1,3 +1,4 @@
+const { request } = require('./utils/request')
 
 //app.js
 App({
@@ -16,28 +17,19 @@ App({
     wx.login({
       success: res => {
         // 发送 res.code 到后台换取 openId, sessionKey, unionId
-        console.log('login success', res)
-        wx.request({
+        request({
           url: 'https://tencent.zhoupengqiang.cn/login',
           data: {
             code: res.code
-          },
-          success: res => {
-            console.log('res.statusCode', res.statusCode)
-            if(res.statusCode === 200){
-              this.globalData.sessionid = res.data.sessionid
-            }
-
-            wx.request({
-              url: 'https://tencent.zhoupengqiang.cn/test',
-              header: {
-                sessionid: this.globalData.sessionid
-              },
-              success: function(res){
-                console.log(res.data)
-              }
-            })
           }
+        }).then(res=>{
+          this.globalData.sessionid = res.data.sessionid
+
+          return request({
+            url: 'https://tencent.zhoupengqiang.cn/test'
+          })
+        }).then(res=>{
+          console.log('test', res.data)
         })
       }
     })
@@ -71,7 +63,7 @@ App({
   },
 
   globalData: {
-    sessionId: '',
+    sessionid: '',
     userInfo: null
   }
 })
