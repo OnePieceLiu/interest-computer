@@ -1,2 +1,94 @@
 <!--pages/record/index.wxml-->
-<text>pages/record/index.wxml</text>
+<view class="container">
+  <form bindsubmit="formSubmit" class="record-form">
+
+    <view class="record-form-item">
+      <view class="record-form-item-title">借贷日期：</view>
+      <view class="record-form-item-input bb1pxe5">
+        <picker mode="date" 
+          value="{{values.date}}" 
+          bindchange="bindLoanDateChange">
+          <view>{{values.loanDate}}</view>
+        </picker>
+      </view>
+    </view>
+
+    <view class="record-form-item">
+      <view class="record-form-item-title">借贷周期：</view>
+      <view class="record-form-item-input bb1pxe5">
+        <input class="form-input-before-unit" 
+          type="number" 
+          value="{{values.cycle}}" 
+          bindblur="bindCycleChange"/>
+        <picker class="form-input-unit" 
+          range="{{cycleUnits}}" 
+          value="{{values.cycleUnit}}" 
+          bindchange="bindCycleUnitChange">
+          <view class="form-input-unit-picker">
+            {{cycleUnits[values.cycleUnit]}}
+          </view>
+        </picker>
+      </view>
+    </view>
+
+    <view class="record-form-item bb1px66 bgcf0" wx:if="{{values.loanDate && values.cycle}}">
+      <view class="record-form-item-title">还款日期：</view>
+      <view class="record-form-item-input">
+        {{values.repaymentDate}}
+      </view>
+    </view>
+
+    <view class="record-form-item">
+      <view class="record-form-item-title">借贷金额：</view>
+      <view class="record-form-item-input bb1pxe5">
+        <input class="form-input-before-unit" 
+          type="digit" 
+          value="{{values.loanAmount}}"
+          bindblur="bindLoanAmountChange"/>
+        <text class="form-input-unit">元</text>
+      </view>
+    </view>
+
+    <view class="record-form-item">
+      <view class="record-form-item-title">借贷利率：</view>
+      <view class="record-form-item-input bb1pxe5">
+        <input class="form-input-before-unit" 
+          type="digit" 
+          value="{{values.rate}}"
+          bindblur="bindRateChange"/>
+        <text class="form-input-unit">%</text>
+      </view>
+    </view>
+
+    <view class="record-form-item bb1px66 bgcf0" wx:if="{{values.loanAmount && values.rate}}">
+      <view class="record-form-item-title">还款金额：</view>
+      <view class="record-form-item-input">
+        {{values.repaymentAmount}} 元
+      </view>
+    </view>
+
+    <view class="record-form-item">
+      <view class="record-form-item-title">周期结束：</view>
+      <radio-group class="record-form-item-radio" bindchange="bindAfterCycleChange">
+        <label class="form-input-radio" wx:for="{{afterCycles}}" wx:key="index">
+          <radio value="{{item.value}}" checked="{{item.value === values.afterCycle}}" />
+          {{item.name}}
+        </label>
+      </radio-group>
+    </view>
+
+    <view class="record-form-item">
+      <view class="record-form-item-title">还款方式：</view>
+      <radio-group class="record-form-item-radio" bindchange="bindRepaymentTypeChange">
+        <label class="form-input-radio" wx:for="{{repaymentTypes}}" wx:key="index">
+          <radio value="{{item.value}}" checked="{{item.value === values.repaymentType}}" />
+          {{item.name}}
+        </label>
+      </radio-group>
+    </view>
+
+    <view class="btn-area">
+      <button form-type="submit">提交</button>
+    </view>
+  </form>
+</view>

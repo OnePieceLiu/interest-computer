@@ -1,9 +1,9 @@
 {
   "pages": [
+    "pages/detail/index",
+    "pages/record/index",
     "pages/index/index",
-    "pages/logs/logs",
-    "pages/confirm/index",
-    "pages/record/index"
+    "pages/logs/logs"
   ],
   "window": {
     "backgroundTextStyle": "light",

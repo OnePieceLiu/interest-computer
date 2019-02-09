@@ -27,13 +27,17 @@ const pify = function (api) {
 }
 
 const request = function (options) {
+  if (options.url.startsWith('/')) {
+    options.url = `https://tencent.zhoupengqiang.cn${options.url}`
+  }
+
   const { header = {} } = options
   const sessionid = getApp().globalData.sessionid
   if (sessionid) {
     header.sessionid = sessionid
   }
 
-  return pify('request')(Object.assign({}, options, header)).then(res => {
+  return pify('request')(Object.assign({}, options, {header})).then(res => {
     if (res.statusCode !== 200 || res.data.code !== 0) {
       throw res
     } else {

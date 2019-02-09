@@ -1,0 +1,48 @@
+/* pages/confirm/index.wxss */
+.dyad-container{
+  padding: 20rpx 50rpx;
+  display: flex;
+  justify-content: space-between;
+}
+
+.disabled-party-info{
+  width: 300rpx;
+  white-space: nowrap;
+  overflow: hidden;
+  opacity: 0.5;
+}
+
+.party-info{
+  width: 300rpx;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.party-title{
+  display: block;
+  width: 100%;
+}
+
+.avatar{
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 10rpx;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.nickname{
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 15rpx;
+}
+
+/*--------------------------------*/
+.detail-content{
+  display: block;
+  padding: 20rpx 50rpx;
+}
+
+.detail-item{
+  display: flex;
+}

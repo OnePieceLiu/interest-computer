@@ -1,0 +1,7 @@
+INSERT INTO wx_user (openid, sessionKey, nickName, avatarUrl, gender, province, city) 
+VALUES('test', 'abcd', 'zpq', 'http://www.zhoupengqiang.cn/123', 1, 'shanghai', 'minhang')
+ON DUPLICATE KEY UPDATE sessionKey='abcd' nickName='zpq', avatarUrl='http://www.zhoupengqiang.cn/123', gender=1, province='shanghai', city='minhang';
+
+INSERT INTO wx_user (openid, sessionKey, nickName, avatarUrl, gender, province, city) 
+VALUES('test', 'xyz', 'zpq', 'http://www.zhoupengqiang.cn/123', 1, 'shanghai', 'minhang')
+ON DUPLICATE KEY UPDATE sessionKey='xyz' nickName='zpq', avatarUrl='http://www.zhoupengqiang.cn/123', gender=1, province='shanghai', city='minhang';

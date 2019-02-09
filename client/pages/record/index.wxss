@@ -1,1 +1,44 @@
 /* pages/record/index.wxss */
+.record-form{
+  display: block;
+  padding: 20rpx 50rpx;
+}
+
+.record-form-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: top;
+  padding: 20rpx 0;
+}
+
+.record-form-item-title{
+  flex: none;
+}
+
+.record-form-item-input{
+  flex: auto;
+  position: relative;
+  text-align: right;
+}
+
+.record-form-item-radio{
+  flex: auto;
+  position: relative;
+}
+
+.form-input-before-unit{
+  text-align: right;
+  padding: 0 60rpx 0 20rpx;
+}
+.form-input-unit{
+  position: absolute;
+  top: 0;
+  right: 10rpx;
+}
+.form-input-unit-picker{
+  color: #1AAD16;
+}
+
+.form-input-radio{
+  display: block;
+}

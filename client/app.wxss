@@ -3,3 +3,15 @@
   height: 100%;
   box-sizing: border-box;
 } 
+
+.bb1pxe5{
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.bb1px66{
+  border-bottom: 1px solid #666666;
+}
+
+.bgcf0{
+  background-color: #f0f0f0;
+}

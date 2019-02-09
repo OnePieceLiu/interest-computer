@@ -1,0 +1,7 @@
+INSERT INTO borrow_loan_record (loanDate, cycle, cycleUnit, loanAmount, rate, afterCycle, repaymentType, debtor, sponsor)
+VALUES('2019-02-08', 3, 0, 11345.78, 6.5, 'compound', 'interestFirst', 'test_debtor', 'debtor');
+
+INSERT INTO borrow_loan_record (loanDate, cycle, cycleUnit, loanAmount, rate, afterCycle, repaymentType, loaner, sponsor)
+VALUES('2019-02-08', 3, 0, 11345.78, 6.5, 'compound', 'interestFirst', 'test_loaner', 'debtor');
+
+select * from borrow_loan_record;

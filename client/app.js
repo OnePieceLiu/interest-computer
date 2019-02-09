@@ -1,3 +1,4 @@
+require('./utils/date')
 const { login, request, getSetting, getUserInfo } = require('./utils/pify')
 
 //app.js
@@ -8,51 +9,38 @@ App({
     logs.unshift(Date.now())
     wx.setStorageSync('logs', logs);
 
-    this.login()
-    this.getUserInfo()
+    this.ctx = Promise.all([this.login(), getUserInfo()])
+      .then(
+        ([loginRes, userInfoRes]) => {
+          console.log('loginRes', loginRes)
+          this.globalData.sessionid = loginRes.data.sessionid
+          this.globalData.userInfo = userInfoRes.userInfo
+          const {nickName, avatarUrl, gender, province, city} = userInfoRes.userInfo
+
+          request({ 
+            url: '/access',
+            data: { nickName, avatarUrl, gender, province, city }
+          })
+        }, e => {
+          console.log('err', e.data)
+        }
+      )
   },
 
   // 登录
   login: function () {
-    login().then(res => {
+    return login().then(res => {
       return request({
-        url: 'https://tencent.zhoupengqiang.cn/login',
+        url: '/login',
         data: {
           code: res.code
         }
       })
-    }).then(res => {
-      this.globalData.sessionid = res.data.sessionid
-    }).catch(e => {
-      console.log('err', e.data)
-    })
-  },
-
-  // 获取用户信息
-  getUserInfo: function () {
-    getSetting().then(res => {
-      console.log('get settting success', res)
-
-      if (res.authSetting['scope.userInfo']) {
-        // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
-        getUserInfo().then(res => {
-          console.log('get user info success', res)
-
-          // 可以将 res 发送给后台解码出 unionId
-          this.globalData.userInfo = res.userInfo
-
-          // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
-          // 所以此处加入 callback 以防止这种情况
-          if (this.userInfoReadyCallback) {
-            this.userInfoReadyCallback(res)
-          }
-        })
-      }
     })
   },
 
   globalData: {
     sessionid: '',
-    userInfo: null
+    userInfo: {}
   }
 })

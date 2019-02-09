@@ -20,6 +20,9 @@
     "axios": "^0.18.0",
     "ioredis": "^4.6.2",
     "koa": "^2.7.0",
-    "koa-router": "^7.4.0"
+    "koa-bodyparser": "^4.2.1",
+    "koa-router": "^7.4.0",
+    "moment": "^2.24.0",
+    "mysql2": "^1.6.4"
   }
 }
