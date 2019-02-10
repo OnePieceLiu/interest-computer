@@ -24,7 +24,6 @@ module.exports = async (ctx, next) => {
     const [[[loanerInfo]], [[debtorInfo]]] = await Promise.all([loanerP, debtorP])
     conn.release();
 
-    console.log('rate', rate)
     let viewer;
     if (openid === loaner) {
       viewer = 'loaner'
@@ -33,7 +32,8 @@ module.exports = async (ctx, next) => {
     } else if (status === 'WAIT_CONFIRM') { // 既不是loaner,也不是debtor，状态未完成，缺哪一方是哪一方
       viewer = sponsor === 'loaner' ? 'debtor' : 'loaner';
     } else {
-      viewer = 'error'  //进行中或者已关闭，不匹配则无权限查看
+      ctx.body = { code: 1, errMsg: '无权限查看!' }
+      return;
     }
 
     ctx.body = {

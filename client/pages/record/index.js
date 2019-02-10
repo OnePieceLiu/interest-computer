@@ -80,7 +80,8 @@ function syncFieldToData(fieldName, callback) {
 
   return function (e) {
     let value = e.detail.value;
-    numberFields.some(a => a === fieldName) && (value = Number(value))
+    // 字符串转化为数字，同时最多保留两位小数
+    numberFields.some(a => a === fieldName) && (value = parseInt(value * 100) / 100)
 
     this.setData({
       [`values.${fieldName}`]: value
@@ -113,7 +114,7 @@ function computeRepaymentAmount() {
   const { loanAmount, rate } = this.data.values
   if (loanAmount && rate) {
     this.setData({
-      'values.repaymentAmount': (loanAmount * (100 + rate) | 0) / 100
+      'values.repaymentAmount': parseInt(loanAmount * (100 + rate)) / 100
     })
   }
 }

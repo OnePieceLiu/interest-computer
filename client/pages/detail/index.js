@@ -9,6 +9,7 @@ Page({
    */
   data: {
     id: '',
+    errMsg: '',
     record: {},
     defaultAvatar: '../../images/profile.jpeg'
   },
@@ -30,21 +31,27 @@ Page({
       record.repaymentType = getEnumName(repaymentTypes, record.repaymentType)
 
       this.setData({ record })
+    }).catch(({ data }) => {
+      const errMsg = data.errMsg;
+      this.setData({ errMsg })
     })
   },
 
-  closeRecord: function(){
+  closeRecord: function () {
     request({
       url: '/close',
-      data: {id: this.data.id},
+      data: { id: this.data.id },
       method: 'POST'
     })
   },
 
-  confirmRecord: function(){
+  confirmRecord: function () {
     request({
       url: '/confirm',
-      data: {id: this.data.id},
+      data: {
+        id: this.data.id,
+        viewer: this.data.record.viewer
+      },
       method: 'POST'
     })
   },
@@ -55,12 +62,10 @@ Page({
   onShareAppMessage: function (res) {
     const { record } = this.data
     const { id, status, sponsor, viewer } = record
-    let title
+    let title = '借贷详情'
 
     if (id) {
-      if (status === 'CREATED') {
-
-      } else if (status === 'WAIT_CONFIRM') {
+      if (status === 'WAIT_CONFIRM') {
         if (sponsor === 'loaner') {
           title = viewer === 'loaner'
             ? `${app.globalData.userInfo.nickName}借给了你一笔钱，请你确认！`

@@ -1,5 +1,5 @@
 <!--pages/detail/index.wxml-->
-<view class="container">
+<view class="container" wx:if="{{!errMsg}}">
   <view class="dyad-container">
     <view class="{{record.loanerInfo ? 'party-info' : 'disabled-party-info'}}">
       <text class="party-title">贷方:</text>
@@ -53,4 +53,12 @@
     <button wx:if="{{record.sponsor===record.viewer}}" open-type="share">分享给好友</button>
     <button wx:if="{{record.sponsor!==record.viewer}}" bindtap="confirmRecord">确认无误</button>
   </view>
+
+  <view class="amount-change-history" wx:if="{{record.status!=='WAIT_CONFIRM'}}">
+    
+  </view>
+</view>
+
+<view style="padding: 100rpx; text-align: center;"  wx:else="{{errMsg}}">
+  {{errMsg}}
 </view>

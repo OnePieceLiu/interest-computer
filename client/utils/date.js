@@ -35,3 +35,22 @@ Date.prototype.addYears = function (y) {
     this.setDate(0);
   }
 };
+Date.prototype.getDateDayDiff = function (date) {
+  const thisDate = this.format()
+  const thatDate = (new Date(date)).format()
+  const thisTs = Date.parse(thisDate)
+  const thatTs = Date.parse(thatDate)
+  const tsDiff = thatTs - thisTs;
+  return Math.floor(tsDiff / (24 * 3600 * 1000));
+}
+Date.prototype.getPeriodDayDiff = function (number, unit) {
+  const thatDate = new Date(this.format())
+  switch (unit) { //注意和enums里面的 ["年","月","周","日"] 顺序保持一致！
+    case 0: thatDate.addYears(number); break;
+    case 1: thatDate.addMonths(number); break;
+    case 2: thatDate.addWeeks(number); break;
+    case 3: thatDate.addDays(number); break;
+    default: break;
+  }
+  return this.getDateDayDiff(thatDate)
+}
