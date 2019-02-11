@@ -82,6 +82,7 @@ function syncFieldToData(fieldName, callback) {
     let value = e.detail.value;
     // 字符串转化为数字，同时最多保留两位小数
     numberFields.some(a => a === fieldName) && (value = parseInt(value * 100) / 100)
+    if (fieldName === 'cycle' && value > 100) value = 100;
 
     this.setData({
       [`values.${fieldName}`]: value
