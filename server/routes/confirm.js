@@ -17,11 +17,13 @@ module.exports = async (ctx, next) => {
     let principal = loanAmount;
     let interest = 0;
     let changeMoney = 0;
-    let finalStatus = 'CREATED'
+    let finalStatus = 'CREATED';
+    let changeOrder = 1;
 
     await pool.execute(
-      `INSERT INTO money_change_record (blid, status, date, event, changeMoney, principal, interest) 
-      VALUES(?, 'DONE', ?, '借钱', ?, ?, ?);`, [blid, loanDate, loanAmount, principal, interest]
+      `INSERT INTO money_change_record (blid, status, date, changeOrder, event, changeMoney, principal, interest) 
+      VALUES(?, ?, ?, ?, ?, ?, ?, ?);`,
+      [blid, 'DONE', loanDate, changeOrder, '借钱', loanAmount, principal, interest]
     )
 
     if (afterCycle === 'compound') {
@@ -30,10 +32,12 @@ module.exports = async (ctx, next) => {
         changeMoney = principal * rate / 100;
         principal = principal + changeMoney;
         interest = interest;
+        changeOrder += 1;
 
         await pool.execute(
-          `INSERT INTO money_change_record (blid, status, date, event, changeMoney, principal, interest) 
-          VALUES(?, 'DONE', ?, '利息转本金', ?, ?, ?);`, [blid, cycleEndDate.format('YYYY-MM-DD'), changeMoney, principal, interest]
+          `INSERT INTO money_change_record (blid, status, date, changeOrder, event, changeMoney, principal, interest) 
+          VALUES(?, ?, ?, ?, ?, ?, ?, ?);`,
+          [blid, 'DONE', cycleEndDate.format('YYYY-MM-DD'), changeOrder, '利息转本金', changeMoney, principal, interest]
         )
 
         date = cycleEndDate;
@@ -43,9 +47,11 @@ module.exports = async (ctx, next) => {
       //最后一次算息
       changeMoney = computeInterest(principal, rate, date, cycleEndDate)
       interest = interest + changeMoney;
+      changeOrder += 1;
       await pool.execute(
-        `INSERT INTO money_change_record (blid, status, date, event, changeMoney, principal, interest) 
-        VALUES(?, 'DONE', ?, '本金生息', ?, ?, ?);`, [blid, now.format('YYYY-MM-DD'), changeMoney, principal, interest]
+        `INSERT INTO money_change_record (blid, status, date, changeOrder, event, changeMoney, principal, interest) 
+        VALUES(?, ?, ?, ?, ?, ?, ?, ?);`,
+        [blid, 'DONE', now.format('YYYY-MM-DD'), changeOrder, '本金生息', changeMoney, principal, interest]
       )
 
     } else if (afterCycle === 'principal') {
@@ -54,10 +60,12 @@ module.exports = async (ctx, next) => {
         changeMoney = principal * rate / 100;
         principal = principal;
         interest = interest + changeMoney;
+        changeOrder += 1;
 
         await pool.execute(
-          `INSERT INTO money_change_record (blid, status, date, event, changeMoney, principal, interest) 
-          VALUES(?, 'DONE', ?, '周期结息', ?, ?, ?);`, [blid, cycleEndDate.format('YYYY-MM-DD'), changeMoney, principal, interest]
+          `INSERT INTO money_change_record (blid, status, date, changeOrder, event, changeMoney, principal, interest) 
+          VALUES(?, ?, ?, ?, ?, ?, ?, ?);`,
+          [blid, 'DONE', cycleEndDate.format('YYYY-MM-DD'), changeOrder, '周期结息', changeMoney, principal, interest]
         )
 
         date = cycleEndDate;
@@ -67,9 +75,11 @@ module.exports = async (ctx, next) => {
       //最后一次算息
       changeMoney = computeInterest(principal, rate, date, cycleEndDate)
       interest = interest + changeMoney;
+      changeOrder += 1;
       await pool.execute(
-        `INSERT INTO money_change_record (blid, status, date, event, changeMoney, principal, interest) 
-        VALUES(?, 'DONE', ?, '本金生息', ?, ?, ?);`, [blid, now.format('YYYY-MM-DD'), changeMoney, principal, interest]
+        `INSERT INTO money_change_record (blid, status, date, changeOrder, event, changeMoney, principal, interest) 
+        VALUES(?, ?, ?, ?, ?, ?, ?, ?);`,
+        [blid, 'DONE', now.format('YYYY-MM-DD'), changeOrder, '本金生息', changeMoney, principal, interest]
       )
 
     } else {
@@ -78,29 +88,35 @@ module.exports = async (ctx, next) => {
         changeMoney = principal * rate / 100;
         principal = principal;
         interest = interest + changeMoney;
+        changeOrder += 1;
 
         await pool.execute(
-          `INSERT INTO money_change_record (blid, status, date, event, changeMoney, principal, interest) 
-          VALUES(?, 'DONE', ?, '周期结息', ?, ?, ?);`, [blid, cycleEndDate.format('YYYY-MM-DD'), changeMoney, principal, interest]
+          `INSERT INTO money_change_record (blid, status, date, changeOrder, event, changeMoney, principal, interest) 
+          VALUES(?, ?, ?, ?, ?, ?, ?, ?);`,
+          [blid, 'DONE', cycleEndDate.format('YYYY-MM-DD'), changeOrder, '周期结息', changeMoney, principal, interest]
         )
 
         changeMoney = -(principal + interest);
         principal = 0;
         interest = 0;
         finalStatus = 'FINISHED'
+        changeOrder += 1;
 
         await pool.execute(
-          `INSERT INTO money_change_record (blid, status, date, event, changeMoney, principal, interest) 
-          VALUES(?, 'DONE', ?, '还钱', ?, ?, ?);`, [blid, cycleEndDate.format('YYYY-MM-DD'), changeMoney, principal, interest]
+          `INSERT INTO money_change_record (blid, status, date, changeOrder, event, changeMoney, principal, interest) 
+          VALUES(?, ?, ?, ?, ?, ?, ?, ?);`,
+          [blid, 'DONE', cycleEndDate.format('YYYY-MM-DD'), changeOrder, '还钱', changeMoney, principal, interest]
         )
 
       } else {
         //最后一次算息
         changeMoney = computeInterest(principal, rate, date, cycleEndDate)
         interest = interest + changeMoney;
+        changeOrder += 1;
         await pool.execute(
-          `INSERT INTO money_change_record (blid, status, date, event, changeMoney, principal, interest) 
-          VALUES(?, 'DONE', ?, '本金生息', ?, ?, ?);`, [blid, now.format('YYYY-MM-DD'), changeMoney, principal, interest]
+          `INSERT INTO money_change_record (blid, status, date, changeOrder, event, changeMoney, principal, interest) 
+          VALUES(?, ?, ?, ?, ?, ?, ?, ?);`,
+          [blid, 'DONE', now.format('YYYY-MM-DD'), changeOrder, '本金生息', changeMoney, principal, interest]
         )
       }
     }

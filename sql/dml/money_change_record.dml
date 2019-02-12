@@ -1,8 +1,8 @@
-INSERT INTO money_change_record (blid, status, date, event, changeMoney, principal, interest) 
-VALUES(1, 'DONE', '2019-02-10', '借钱', 100000, 100000, 0);
+INSERT INTO money_change_record (blid, status, date, changeOrder, event, changeMoney, principal, interest) 
+VALUES(1, 'DONE', '2019-02-10', 1, '借钱', 100000, 100000, 0);
 
-INSERT INTO money_change_record (blid, status, date, event, changeMoney, principal, interest) 
-VALUES(1, 'DONE', '2019-02-10', '还钱', 40000, 60000, 0);
+INSERT INTO money_change_record (blid, status, date, changeOrder, event, changeMoney, principal, interest) 
+VALUES(1, 'DONE', '2019-02-10', 2, '还钱', 40000, 60000, 0);
 
-INSERT INTO money_change_record (blid, status, date, event, changeMoney, principal, interest) 
-VALUES(1, 'WAIT_CONFIRM', '2019-02-10', '还钱', 20000, 40000, 0);
+INSERT INTO money_change_record (blid, status, date, changeOrder, event, changeMoney, principal, interest) 
+VALUES(1, 'WAIT_CONFIRM', '2019-02-10', 3, '还钱', 20000, 40000, 0);
