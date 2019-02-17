@@ -2,7 +2,6 @@ const app = getApp()
 
 const uiFuns = {
   initUserInfo: function () {
-    console.log('init user info', this.data.hasUserInfo)
     if (app.globalData.userInfo) {
       this.setData({
         userInfo: app.globalData.userInfo,

@@ -64,7 +64,7 @@ Page({
         this.setData({ moneyChanges: data.data })
       }
     }).catch(({ data }) => {
-      const errMsg = data.errMsg;
+      const errMsg = data.errMsg ? data.errMsg : data;
       this.setData({ errMsg })
     })
   },

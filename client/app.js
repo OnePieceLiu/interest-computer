@@ -21,7 +21,6 @@ App({
         }
       })
     }).then(res => {
-      console.log('loginRes', res)
       this.globalData.sessionid = res.data.sessionid
     })
   },

@@ -14,7 +14,7 @@ module.exports = async (ctx, next) => {
     const conn = await pool.getConnection()
 
     // 先把确认人填入 记录中
-    await conn.execute(`UPDATE borrow_loan_record SET ${sponsor === 'loaner' ? 'debtor' : 'loaner'}=?`, [openid])
+    await conn.execute(`UPDATE borrow_loan_record SET ${sponsor === 'loaner' ? 'debtor' : 'loaner'}=? where id=?`, [openid, blid])
 
     // 插入 该借贷单 首条 money_change_record 记录
     const [res] = await conn.execute(
