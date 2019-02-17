@@ -58,7 +58,7 @@
   <view class="repayment-to-confirm" wx:if="{{blInfo.status==='CREATED'}}">
     <view>
       <text>待确认还款</text>
-      <button wx:if="{{blInfo.viewer==='debtor'}}" bindtap="showRepayModal">还款</button>
+      <button wx:if="{{blInfo.viewer==='debtor'}}" bindtap="toggleRepayModal" size="mini">还款</button>
     </view>
     <view wx:if="{{moneyChanges.todo}}">
       <view wx:for="{{moneyChanges.todo}}" wx:key="index">
@@ -69,13 +69,13 @@
       </view>
     </view>
   </view>
-  <view class="repay-content-modal" wx:if="{{repayModal}}">
-    <form bindsubmit="repay">
+  <view class="ic-modal-container" wx:if="{{repayModal}}">
+    <form bindsubmit="repay" class="repay-modal-form">
       <view class="record-form-item">
         <view class="record-form-item-title">还款日期：</view>
         <view class="record-form-item-input bb1pxe5">
           <picker mode="date" start="{{blInfo.loanDate}}" end="{{today}}" value="{{values.date}}" bindchange="bindDateChange">
-            <view>{{values.loanDate}}</view>
+            <view>{{values.date}}</view>
           </picker>
         </view>
       </view>
@@ -83,7 +83,7 @@
         <view class="record-form-item-title">还款金额：</view>
         <view class="record-form-item-input bb1pxe5">
           <input class="form-input-before-unit" type="digit" value="{{values.amount}}" bindblur="bindAmountChange" />
-          <text class="form-input-unit">%</text>
+          <text class="form-input-unit">元</text>
         </view>
       </view>
       <button bindtap="toggleRepayModal">取消</button>

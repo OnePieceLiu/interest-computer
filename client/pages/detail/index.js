@@ -38,32 +38,37 @@ Page({
     this.initUserInfo();
 
     const { id = 1 } = options
-    this.setData({ id }, () => this.getPageData())
+    this.setData({ id }, () => this.getBlInfo())
   },
 
-  getPageData(){
-    app.loginP.then(() => request({
+  getBlInfo(){
+    app.loginP
+    .then(() => request({
       url: '/record',
       data: { id: this.data.id }
-    })).then(({ data }) => {
+    }))
+    .then(({ data }) => {
       const blInfo = data.data;
       blInfo.cycleUnit = getEnumName(cycleUnits, blInfo.cycleUnit)
       blInfo.afterCycle = getEnumName(afterCycles, blInfo.afterCycle)
       blInfo.repaymentType = getEnumName(repaymentTypes, blInfo.repaymentType)
 
-      this.setData({ blInfo })
+      this.setData({ blInfo }, ()=>this.getMoneyChanges())
 
-      if (blInfo.status !== 'WAIT_CONFIRM') {
-        return request({
-          url: '/moneyChanges',
-          data: { blid: blInfo.id }
-        })
-      } else {
-        return { data: undefined }
-      }
-    }).then(({ data }) => {
-      if (data) {
-        const done = data.data.done.map(e=>{
+    },({ data }) => {
+      const errMsg = data.errMsg ? data.errMsg : data;
+      this.setData({ errMsg })
+    })
+  },
+
+  getMoneyChanges(){
+    const {blInfo} = this.data;
+    if(blInfo.status !== 'WAIT_CONFIRM'){
+      request({
+        url: '/moneyChanges',
+        data: { blid: blInfo.id }
+      }).then(({data})=>{
+        const done = data.data.done.map(e => {
           e.date = e.date.slice(0, 10)
           return e;
         })
@@ -71,12 +76,9 @@ Page({
           e.date = e.date.slice(0, 10)
           return e;
         })
-        this.setData({ moneyChanges: {done, todo} })
-      }
-    }).catch(({ data }) => {
-      const errMsg = data.errMsg ? data.errMsg : data;
-      this.setData({ errMsg })
-    })
+        this.setData({ moneyChanges: { done, todo } })
+      })
+    }
   },
 
   closeRecord: function () {
@@ -95,7 +97,7 @@ Page({
         viewer: this.data.blInfo.viewer
       },
       method: 'POST'
-    }).then(()=>this.getPageData())
+    }).then(()=>this.getBlInfo())
   },
 
   toggleRepayModal: function () {
@@ -110,17 +112,20 @@ Page({
   repay: function () {
     const blid = this.data.id;
     const { date, amount } = this.data.values;
-    this.toggleRepayModal();
-    console.log(blid, date, amount);
+
     if (amount <= 0) {
       console.error('wrong amount!')
       return
     }
-    // return request({
-    //   url: '/repay',
-    //   data: {blid, date, amount},
-    //   method: 'POST'
-    // })
+
+    return request({
+      url: '/repay',
+      data: {blid, date, amount},
+      method: 'POST'
+    }).then(() => {
+      this.getMoneyChanges()
+      this.toggleRepayModal()
+    })
   },
 
   repayConfirm: function (e) {

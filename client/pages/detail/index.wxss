@@ -37,7 +37,7 @@
   margin-left: 15rpx;
 }
 
-/*--------------------------------*/
+/*--------借贷单详情 start-------*/
 .detail-content{
   display: block;
   padding: 20rpx 50rpx;
@@ -46,3 +46,42 @@
 .detail-item{
   display: flex;
 }
+/*--------借贷单详情 end---------*/
+
+/*----------还款单modal start-------------*/
+.repay-modal-form{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 95%;
+  box-sizing: border-box;
+  background-color: #fff;
+  border-radius: 4px;
+  padding: 20rpx;
+}
+.record-form-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: top;
+  padding: 20rpx 0;
+}
+.record-form-item-title{
+  flex: none;
+}
+.record-form-item-input{
+  flex: auto;
+  position: relative;
+  text-align: right;
+}
+.form-input-before-unit{
+  text-align: right;
+  padding: 0 60rpx 0 20rpx;
+}
+.form-input-unit{
+  position: absolute;
+  top: 0;
+  right: 10rpx;
+}
+
+/*----------还款单modal end-------------*/
