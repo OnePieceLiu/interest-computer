@@ -45,10 +45,9 @@ App({
   recordAccess: function () {
     const { userInfo } = this.globalData
     if (userInfo && userInfo.nickName) {
-      const { nickName, avatarUrl, gender, province, city } = userInfo
       request({
         url: '/access',
-        data: { nickName, avatarUrl, gender, province, city }
+        data: userInfo
       })
     }
   },
