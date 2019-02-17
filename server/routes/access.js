@@ -1,9 +1,7 @@
-const querystring = require('querystring')
 const { pool } = require('../utils/mysql')
 
 module.exports = async (ctx, next) => {
-  const query = querystring.parse(ctx.search.slice(1))
-  const { openid, sessionKey } = ctx;
+  const { openid, sessionKey, query } = ctx;
   const { nickName, avatarUrl, gender, province, city } = query
 
   try {

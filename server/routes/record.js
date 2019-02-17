@@ -1,10 +1,8 @@
-const querystring = require('querystring')
 const moment = require('moment')
 const { pool } = require('../utils/mysql')
 
 module.exports = async (ctx, next) => {
-  const { method, search, request: { body }, openid } = ctx
-  const query = querystring.parse(search.slice(1))
+  const { method, query, request: { body }, openid } = ctx
 
   if (method === 'POST') {
     const { loanDate, cycle, cycleUnit, loanAmount, rate, afterCycle, repaymentType, sponsor } = body

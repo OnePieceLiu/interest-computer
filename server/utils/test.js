@@ -1,8 +1,15 @@
 const { pool } = require('./mysql')
+const moment = require('moment');
 
-pool.query('select * from wx_user where openid=1241').then(([rows, fileds]) => {
-  console.log('data', rows)
-})
+const ts = 1550372451047
+const a = moment(ts).format('YYYY-MM-DD HH:mm:ss.SSS')
+console.log(a);
+
+// pool.execute('select * from borrow_loan_record where createTime<?', [a])
+pool.execute('select * from borrow_loan_record')
+  .then(([rows, fileds]) => {
+    console.log('data', rows)
+  })
 
 // const moment = require('moment')
 

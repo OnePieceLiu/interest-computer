@@ -1,9 +1,7 @@
-const querystring = require('querystring')
 const { pool } = require('../utils/mysql')
 
 module.exports = async (ctx, next) => {
-  const { search, openid } = ctx
-  const query = querystring.parse(search.slice(1))
+  const { openid, query } = ctx
   const { blid } = query
 
   const conn = await pool.getConnection()

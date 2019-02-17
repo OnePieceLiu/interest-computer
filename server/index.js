@@ -4,10 +4,14 @@ const bodyParser = require('koa-bodyparser')
 const fs = require('fs')
 const path = require('path')
 const session = require('./middlewares/session')
+const params = require('./middlewares/params')
+const pagination = require('./middlewares/pagination')
 const app = new Koa()
 
 // 中间件
 app.use(session)
+app.use(params)
+app.use(pagination)
 app.use(bodyParser())
 
 // 路由

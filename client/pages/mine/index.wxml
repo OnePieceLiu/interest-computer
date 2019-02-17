@@ -1,2 +1,22 @@
-<!--pages/mine/index.wxml-->
-<text>pages/mine/index.wxml</text>
+<!-- pages/mine/index.wxml -->
+<view class="container">
+  <view class="ic-tab">
+    <view data-type="borrow" bindtap="selectTab" class="{{'ic-tab-item ' + (type==='borrow' && 'tab-item-selected')}}">
+      借入
+    </view>
+    <view data-type="loan" bindtap="selectTab" class="{{'ic-tab-item ' + (type==='loan' && 'tab-item-selected')}}">
+      借出
+    </view>
+  </view>
+  <view wx:for="{{type==='borrow'? borrowList.data : loanList.data }}" wx:key="index" style="margin: 15px 5px;">
+    <text>借款金额: {{item.loanAmount}}</text>
+    <text>借款利率: {{item.rate}}</text>
+    <text>应还本金: {{item.principal}}</text>
+    <text>应还利息: {{item.interest}}</text>
+    <text>借款日期: {{item.loanDate}}</text>
+    <text>借款周期: {{item.cycle}} {{item.cycleUnit}}</text>
+  </view>
+  <view wx:if="{{type==='borrow'? borrowList.end : loanList.end}}" style="text-align:center; color: #999;">
+    --没有更多数据了！--
+  </view>
+</view>

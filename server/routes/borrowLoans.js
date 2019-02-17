@@ -1,14 +1,12 @@
 const { pool } = require('../utils/mysql')
-const querystring = require('querystring')
 
 module.exports = async (ctx, next) => {
-  const { search, openid } = ctx
-  const query = querystring.parse(search.slice(1))
-  const { type } = query
+  const { openid, query, path, pageTS } = ctx
+  const { type, offset, limit } = query
 
   const [rows] = await pool.execute(
-    `SELECT * FROM borrow_loan_record where ${type === 'borrow' ? 'debtor' : 'loaner'}=?`,
-    [openid]
+    `SELECT * FROM borrow_loan_record where ${type === 'borrow' ? 'debtor' : 'loaner'}=? AND createTime<? limit ?,?`,
+    [openid, pageTS[path], offset, limit]
   )
 
   ctx.body = { code: 0, data: rows }
