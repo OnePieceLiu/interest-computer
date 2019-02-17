@@ -4,17 +4,25 @@
   box-sizing: border-box;
 } 
 
+/** 微信授权覆盖层start **/
 .get-userinfo-container{
-  height: 100%;
+  position: absolute;
+  z-index: 10000;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
   padding-top: 100rpx;
   text-align: center;
+  background-color: #fff;
 }
 
 .get-userinfo-btn{
   width: 350rpx;
   margin-top: 100rpx;
 }
+/** 微信授权覆盖层end **/
 
+/** 顶部tab样式start **/
 .ic-tab{
   height: 30px;
   display: flex;
@@ -32,6 +40,7 @@
   box-sizing: border-box;
   border-bottom: 2px solid #1AAD16;
 }
+/** 顶部tab样式end **/
 
 .bb1pxe5{
   border-bottom: 1px solid #e5e5e5;

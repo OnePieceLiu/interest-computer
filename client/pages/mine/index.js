@@ -1,5 +1,6 @@
 const { uiData, uiFuns } = require('../../utils/userInfo.js')
 const { request } = require('../../utils/pify.js')
+const { blStatus, getEnumName} = require("../../utils/enums.js")
 
 Page({
 
@@ -42,7 +43,10 @@ Page({
       url: '/borrowLoans',
       data: { type, offset, limit }
     }).then(({ data }) => {
-      const list = data.data;
+      const list = data.data.map(e=>{
+        e.statusZh = getEnumName(blStatus, e.status)
+        return e;
+      });
 
       this.setData({
         [`${type}List`]: {

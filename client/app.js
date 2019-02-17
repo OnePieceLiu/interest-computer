@@ -29,7 +29,7 @@ App({
   getUserInfo: function () {
     return getSetting().then(res => {
       if (res.authSetting['scope.userInfo']) {
-        return getUserInfo({ lang: 'zh_CN'}).then(res => {
+        return getUserInfo({ lang: 'zh_CN' }).then(res => {
           this.globalData.userInfo = res.userInfo;
 
           if (this.userInfoReadyCallback) {

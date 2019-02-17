@@ -6,9 +6,9 @@ const a = moment(ts).format('YYYY-MM-DD HH:mm:ss.SSS')
 console.log(a);
 
 // pool.execute('select * from borrow_loan_record where createTime<?', [a])
-pool.execute('select * from borrow_loan_record')
+pool.execute('select * from money_change_record')
   .then(([rows, fileds]) => {
-    console.log('data', rows)
+    console.log('data', typeof rows[0].principal)
   })
 
 // const moment = require('moment')

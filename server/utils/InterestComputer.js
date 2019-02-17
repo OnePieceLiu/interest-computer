@@ -10,7 +10,7 @@ const { cycle2char } = require('./enums')
 class InterestComputer {
   // repaymentRecords 的 date应该是按时间正序排列好的
   constructor(lastRecord, blInfo, repaymentRecords = []) {
-    if (lastRecord.blid !== blInfo.id) {
+    if (Number(lastRecord.blid) !== Number(blInfo.id)) {
       throw '借贷单下没有该还款单！'
     }
 
@@ -25,8 +25,8 @@ class InterestComputer {
     this.cycle = blInfo.cycle;
     this.cycleUnit = blInfo.cycleUnit;
     this.momentUnit = cycle2char[blInfo.cycleUnit];
-    this.loanAmount = blInfo.loanAmount;
-    this.rate = blInfo.rate;
+    this.loanAmount = Number(blInfo.loanAmount);
+    this.rate = Number(blInfo.rate);
     this.afterCycle = blInfo.afterCycle;
     this.repaymentType = blInfo.repaymentType;
 
@@ -35,9 +35,9 @@ class InterestComputer {
     this.changeDate = lastRecord.date;
     this.changeOrder = lastRecord.changeOrder;
     this.event = lastRecord.event;
-    this.changeMoney = lastRecord.changeMoney;
-    this.principal = lastRecord.principal;
-    this.interest = lastRecord.interest;
+    this.changeMoney = Number(lastRecord.changeMoney);
+    this.principal = Number(lastRecord.principal);
+    this.interest = Number(lastRecord.interest);
 
     this.computePeriod()
   }
@@ -49,8 +49,8 @@ class InterestComputer {
     const cycleNumber = changeDate.diff(loanDate, this.momentUnit)
 
     // 这两个还是moment对象
-    this.cycleStartDate = loanDate.add(cycleNumber, this.momentUnit)
-    this.cycleEndDate = loanDate.add(cycleNumber + 1, this.momentUnit)
+    this.cycleStartDate = moment(loanDate).add(cycleNumber * this.cycle, this.momentUnit)
+    this.cycleEndDate = moment(this.cycleStartDate).add(this.cycle, this.momentUnit)
     this.periodDays = this.cycleEndDate.diff(this.cycleStartDate, 'd')
   }
 
@@ -171,7 +171,7 @@ class InterestComputer {
     const result = await this.conn.execute(
       `INSERT INTO money_change_record (blid, status, changeOrder, date, event, changeMoney, principal, interest) 
       VALUES(?, ?, ?, ?, ?, ?, ?, ?);`,
-      [blid, status, this.changeOrder++, changeDate, event, changeMoney, principal, interest]
+      [blid, status, ++this.changeOrder, changeDate, event, changeMoney, principal, interest]
     )
 
     return result;

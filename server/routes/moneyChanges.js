@@ -5,17 +5,17 @@ module.exports = async (ctx, next) => {
   const { blid } = query
 
   const conn = await pool.getConnection()
-  const [doneRecords] = await conn.execute(
+  const [done] = await conn.execute(
     `SELECT * FROM money_change_record where blid=? AND status=? order by changeOrder desc limit 50`,
     [blid, 'DONE']
   )
 
-  const [todoRecords] = await conn.execute(
+  const [todo] = await conn.execute(
     `SELECT * FROM money_change_record where blid=? AND status=? limit 50`,
     [blid, 'WAIT_CONFIRM']
   )
 
   conn.release()
 
-  ctx.body = { code: 0, data: { doneRecords, todoRecords } }
+  ctx.body = { code: 0, data: { done, todo } }
 }

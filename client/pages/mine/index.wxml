@@ -1,4 +1,5 @@
-<!-- pages/mine/index.wxml -->
+<include src="../../comps/authorize.wxml" />
+
 <view class="container">
   <view class="ic-tab">
     <view data-type="borrow" bindtap="selectTab" class="{{'ic-tab-item ' + (type==='borrow' && 'tab-item-selected')}}">
@@ -15,6 +16,7 @@
       <text>应还利息: {{item.interest}}</text>
       <text>借款日期: {{item.loanDate}}</text>
       <text>借款周期: {{item.cycle}} {{item.cycleUnit}}</text>
+      <text>{{item.statusZh}}</text>
     </navigator>
   </view>
   <view wx:if="{{type==='borrow'? borrowList.end : loanList.end}}" style="text-align:center; color: #999;">

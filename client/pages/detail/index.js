@@ -38,11 +38,13 @@ Page({
     this.initUserInfo();
 
     const { id = 1 } = options
+    this.setData({ id }, () => this.getPageData())
+  },
 
-    this.setData({ id })
+  getPageData(){
     app.loginP.then(() => request({
       url: '/record',
-      data: { id }
+      data: { id: this.data.id }
     })).then(({ data }) => {
       const blInfo = data.data;
       blInfo.cycleUnit = getEnumName(cycleUnits, blInfo.cycleUnit)
@@ -61,7 +63,15 @@ Page({
       }
     }).then(({ data }) => {
       if (data) {
-        this.setData({ moneyChanges: data.data })
+        const done = data.data.done.map(e=>{
+          e.date = e.date.slice(0, 10)
+          return e;
+        })
+        const todo = data.data.todo.map(e => {
+          e.date = e.date.slice(0, 10)
+          return e;
+        })
+        this.setData({ moneyChanges: {done, todo} })
       }
     }).catch(({ data }) => {
       const errMsg = data.errMsg ? data.errMsg : data;
@@ -85,7 +95,7 @@ Page({
         viewer: this.data.blInfo.viewer
       },
       method: 'POST'
-    })
+    }).then(()=>this.getPageData())
   },
 
   toggleRepayModal: function () {

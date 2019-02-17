@@ -12,6 +12,13 @@ const repaymentTypes = [
   { value: "interestFirst", name: "先息后本" }
 ];
 
+const blStatus = [
+  { value: "WAIT_CONFIRM", name: '待确认' },
+  { value: "CREATED", name: '进行中' },
+  { value: "FINISHED", name: '一还清' },
+  { value: "CLOSED", name: '已关闭' }
+]
+
 function getEnumName(_enum = [], value){
   if(typeof _enum[0] === 'object'){
     const item = _enum.find(item=>item.value===value)
@@ -26,6 +33,7 @@ module.exports = {
   cycleUnits, 
   afterCycles,
   repaymentTypes,
+  blStatus,
 
   getEnumName
 }

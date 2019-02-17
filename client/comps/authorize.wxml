@@ -1,0 +1,7 @@
+<view wx:if="{{!hasUserInfo}}" class="get-userinfo-container">
+  <view>请授予小程序获取头像昵称权限，</view>
+  <view>方便好友确认您的身份！</view>
+  <button open-type="getUserInfo" bindgetuserinfo="getUserInfo" class="get-userinfo-btn" type="primary">
+    确定
+  </button>
+</view>
