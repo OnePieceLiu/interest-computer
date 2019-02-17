@@ -11,7 +11,7 @@ module.exports = async (ctx, next) => {
   const { status, loanDate, cycle, cycleUnit, loanAmount, sponsor, afterCycle, rate } = blInfo
 
   if (status === 'WAIT_CONFIRM') {
-    const conn = pool.getConnection()
+    const conn = await pool.getConnection()
 
     // 先把确认人填入 记录中
     await conn.execute(`UPDATE borrow_loan_record SET ${sponsor === 'loaner' ? 'debtor' : 'loaner'}=?`, [openid])
@@ -47,7 +47,7 @@ module.exports = async (ctx, next) => {
       })
     }
 
-    await IC.create(blInfo, lastRecord, repaymentRecords)
+    await IC.create(lastRecord, blInfo, repaymentRecords)
 
     ctx.body = { code: 0, data: 'success' }
   } else if (status === 'CREATED') {

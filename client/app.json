@@ -1,9 +1,9 @@
 {
   "pages": [
+    "pages/index/index",
     "pages/record/index",
     "pages/detail/index",
-    "pages/index/index",
-    "pages/logs/logs"
+    "pages/mine/index"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -22,10 +22,10 @@
         "text": "首页"
       },
       {
-        "pagePath": "pages/logs/logs",
+        "pagePath": "pages/mine/index",
         "iconPath": "images/icons/user.png",
         "selectedIconPath": "images/icons/user_selected.png",
-        "text": "日志"
+        "text": "我的"
       }
     ]
   }

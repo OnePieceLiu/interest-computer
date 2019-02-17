@@ -14,7 +14,6 @@ class InterestComputer {
       throw '借贷单下没有该还款单！'
     }
 
-    this.conn = pool.getConnection();
     this.lastRecord = lastRecord;
     this.blInfo = blInfo;
     this.repaymentRecords = repaymentRecords;
@@ -66,6 +65,8 @@ class InterestComputer {
   }
 
   async compute() {
+    this.conn = await pool.getConnection()
+
     await this.deleteBeforeCompute()
 
     const now = moment(); //now 包含时分秒，同一天 也会为true。

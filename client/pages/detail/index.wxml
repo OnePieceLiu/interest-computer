@@ -1,64 +1,100 @@
-<!--pages/detail/index.wxml-->
-<view class="container" wx:if="{{!errMsg}}">
+<!-- pages/detail/index.wxml -->
+<view wx:if="{{!hasUserInfo}}" class="get-userinfo-container">
+  <view>请授予小程序获取头像昵称权限，</view>
+  <view>方便好友确认您的身份！</view>
+  <button open-type="getUserInfo" bindgetuserinfo="getUserInfo" class="get-userinfo-btn" type="primary">
+    确定
+  </button>
+</view>
+<view class="container" wx:elif="{{!errMsg}}">
   <view class="dyad-container">
-    <view class="{{record.loanerInfo ? 'party-info' : 'disabled-party-info'}}">
+    <view class="{{blInfo.loanerInfo ? 'party-info' : 'disabled-party-info'}}">
       <text class="party-title">贷方:</text>
-      <image src="{{record.loanerInfo ? record.loanerInfo.avatarUrl : defaultAvatar}}" class="avatar" />
-      <text class="nickname">{{record.loanerInfo ? record.loanerInfo.nickName : '待好友确认'}}</text>
+      <image src="{{blInfo.loanerInfo ? blInfo.loanerInfo.avatarUrl : defaultAvatar}}" class="avatar" />
+      <text class="nickname">{{blInfo.loanerInfo ? blInfo.loanerInfo.nickName : '待好友确认'}}</text>
     </view>
-
     <view style="border:1rpx dashed #e5e5e5"></view>
-
-    <view class="{{record.debtorInfo ? 'party-info' : 'disabled-party-info'}}">
+    <view class="{{blInfo.debtorInfo ? 'party-info' : 'disabled-party-info'}}">
       <text class="party-title">借方:</text>
-      <image src="{{record.debtorInfo ? record.debtorInfo.avatarUrl : defaultAvatar}}" class="avatar" />
-      <text class="nickname">{{record.debtorInfo ? record.debtorInfo.nickName : '待好友确认'}}</text>
+      <image src="{{blInfo.debtorInfo ? blInfo.debtorInfo.avatarUrl : defaultAvatar}}" class="avatar" />
+      <text class="nickname">{{blInfo.debtorInfo ? blInfo.debtorInfo.nickName : '待好友确认'}}</text>
     </view>
   </view>
-
   <view class="detail-content">
     <view class="detail-item">
       <view class="detail-item-title">借贷日期：</view>
-      <view class="detail-item-value">{{record.loanDate}}</view>
+      <view class="detail-item-value">{{blInfo.loanDate}}</view>
     </view>
-
     <view class="detail-item">
       <view class="detail-item-title">借贷周期：</view>
-      <view class="detail-item-value">{{record.cycle}}{{record.cycleUnit}}</view>
+      <view class="detail-item-value">{{blInfo.cycle}}{{blInfo.cycleUnit}}</view>
     </view>
-
     <view class="detail-item">
       <view class="detail-item-title">借贷金额：</view>
-      <view class="detail-item-value">{{record.loanAmount}}元</view>
+      <view class="detail-item-value">{{blInfo.loanAmount}}元</view>
     </view>
-
     <view class="detail-item">
       <view class="detail-item-title">借贷利率：</view>
-      <view class="detail-item-value">{{record.rate}}%</view>
+      <view class="detail-item-value">{{blInfo.rate}}%</view>
     </view>
-
     <view class="detail-item">
       <view class="detail-item-title">周期结束：</view>
-      <view class="detail-item-value">{{record.afterCycle}}</view>
+      <view class="detail-item-value">{{blInfo.afterCycle}}</view>
     </view>
-
     <view class="detail-item">
       <view class="detail-item-title">还款方式：</view>
-      <view class="detail-item-value">{{record.repaymentType}}</view>
+      <view class="detail-item-value">{{blInfo.repaymentType}}</view>
     </view>
   </view>
-
-  <view class="wait-operator-container" wx:if="{{record.status==='WAIT_CONFIRM'}}">
-    <button wx:if="{{record.sponsor===record.viewer}}" bindtap="closeRecord">关闭记录</button>
-    <button wx:if="{{record.sponsor===record.viewer}}" open-type="share">分享给好友</button>
-    <button wx:if="{{record.sponsor!==record.viewer}}" bindtap="confirmRecord">确认无误</button>
+  <view class="wait-operator-container" wx:if="{{blInfo.status==='WAIT_CONFIRM'}}">
+    <button wx:if="{{blInfo.sponsor===blInfo.viewer}}" bindtap="closeRecord">关闭记录</button>
+    <button wx:if="{{blInfo.sponsor===blInfo.viewer}}" open-type="share">分享给好友</button>
+    <button wx:if="{{blInfo.sponsor!==blInfo.viewer}}" bindtap="confirmRecord">确认无误</button>
   </view>
-
-  <view class="amount-change-history" wx:if="{{record.status!=='WAIT_CONFIRM'}}">
-    
+  <view class="amount-change-history" wx:if="{{blInfo.status!=='WAIT_CONFIRM'}}">
+    <view>
+      <text>金额变动记录</text>
+    </view>
+    <view wx:if="{{moneyChanges.done}}">
+      <view wx:for="moneyChanges.done" wx:key="index">
+        {{item.date}} {{item.event}} {{item.changeMoney}} {{item.principal}} {{item.interest}}
+      </view>
+    </view>
+  </view>
+  <view class="repayment-to-confirm" wx:if="{{blInfo.status==='CREATED'}}">
+    <view>
+      <text>待确认还款</text>
+      <button wx:if="{{blInfo.viewer==='debtor'}}" bindtap="showRepayModal">还款</button>
+    </view>
+    <view wx:if="{{moneyChanges.todo}}">
+      <view wx:for="moneyChanges.todo" wx:key="index">
+        {{item.date}} {{item.event}} {{item.changeMoney}} {{item.principal}} {{item.interest}}
+        <button wx:if="{{blInfo.viewer==='loaner'}}" data-id="{{item.id}}" bindtap="repayConfirm">
+          确认
+        </button>
+      </view>
+    </view>
+  </view>
+  <view class="repay-content-modal" wx:if="{{repayModal}}">
+    <form bindsubmit="repay">
+      <view class="record-form-item">
+        <view class="record-form-item-title">还款日期：</view>
+        <view class="record-form-item-input bb1pxe5">
+          <picker mode="date" start="{{blInfo.loanDate}}" end="{{today}}" value="{{values.date}}" bindchange="bindDateChange">
+            <view>{{values.loanDate}}</view>
+          </picker>
+        </view>
+      </view>
+      <view class="record-form-item">
+        <view class="record-form-item-title">还款金额：</view>
+        <view class="record-form-item-input bb1pxe5">
+          <input class="form-input-before-unit" type="digit" value="{{values.amount}}" bindblur="bindAmountChange" />
+          <text class="form-input-unit">%</text>
+        </view>
+      </view>
+      <button bindtap="toggleRepayModal">取消</button>
+      <button form-type="submit">提交</button>
+    </form>
   </view>
 </view>
-
-<view style="padding: 100rpx; text-align: center;"  wx:else="{{errMsg}}">
-  {{errMsg}}
-</view>
+<view style="padding: 100rpx; text-align: center;" wx:else>{{errMsg}}</view>

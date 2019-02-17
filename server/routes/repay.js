@@ -4,7 +4,7 @@ module.exports = async (ctx, next) => {
   const { request: { body }, openid } = ctx;
   const { blid, date, amount } = body
 
-  const conn = pool.getConnection()
+  const conn = await pool.getConnection()
   const [[blInfo]] = await conn.execute(`SELECT debtor, date from borrow_loan_record where id=?`, [blid])
   if (blInfo || blInfo.debtor !== openid) {
     ctx.body = { code: 1, data: '你不是该借贷单的债务人，无法发起还款！' }

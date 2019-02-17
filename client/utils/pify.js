@@ -28,7 +28,8 @@ const pify = function (api) {
 
 const request = function (options) {
   if (options.url.startsWith('/')) {
-    options.url = `https://tencent.zhoupengqiang.cn${options.url}`
+    // options.url = `https://tencent.zhoupengqiang.cn${options.url}`
+    options.url = `http://192.168.1.5:8765${options.url}`
   }
 
   const { header = {} } = options
@@ -37,7 +38,7 @@ const request = function (options) {
     header.sessionid = sessionid
   }
 
-  return pify('request')(Object.assign({}, options, {header})).then(res => {
+  return pify('request')(Object.assign({}, options, { header })).then(res => {
     if (res.statusCode !== 200 || res.data.code !== 0) {
       throw res
     } else {

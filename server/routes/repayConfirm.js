@@ -5,7 +5,7 @@ module.exports = async (ctx, next) => {
   const { request: { body }, openid } = ctx;
   const { id } = body
 
-  const conn = pool.getConnection()
+  const conn = await pool.getConnection()
   const [[mcInfo]] = await conn.execute(`SELECT blid, date FROM money_change_record WHERE id=?`, [id])
   const { blid } = mcInfo
   const [[blInfo]] = await conn.execute(`SELECT loaner, repaymentType FROM borrow_loan_record WHERE id=?`, [blid])
@@ -28,7 +28,7 @@ module.exports = async (ctx, next) => {
 
     conn.release()
 
-    await IC.create(blInfo, lastRecord, repaymentRecords)
+    await IC.create(lastRecord, blInfo, repaymentRecords)
 
     ctx.body = { code: 0, data: 'success!' }
   }

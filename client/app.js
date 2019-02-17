@@ -4,27 +4,11 @@ const { login, request, getSetting, getUserInfo } = require('./utils/pify')
 //app.js
 App({
   onLaunch: function () {
-    // 展示本地存储能力
-    var logs = wx.getStorageSync('logs') || []
-    logs.unshift(Date.now())
-    wx.setStorageSync('logs', logs);
+    this.loginP = this.login();
+    this.userInfoP = this.getUserInfo()
 
-    this.ctx = Promise.all([this.login(), getUserInfo()])
-      .then(
-        ([loginRes, userInfoRes]) => {
-          console.log('loginRes', loginRes)
-          this.globalData.sessionid = loginRes.data.sessionid
-          this.globalData.userInfo = userInfoRes.userInfo
-          const {nickName, avatarUrl, gender, province, city} = userInfoRes.userInfo
-
-          request({ 
-            url: '/access',
-            data: { nickName, avatarUrl, gender, province, city }
-          })
-        }, e => {
-          console.log('err', e.data)
-        }
-      )
+    Promise.all([this.loginP, this.userInfoP])
+      .then(() => this.recordAccess(), err => console.log('err', err))
   },
 
   // 登录
@@ -36,11 +20,41 @@ App({
           code: res.code
         }
       })
+    }).then(res => {
+      console.log('loginRes', res)
+      this.globalData.sessionid = res.data.sessionid
     })
+  },
+
+  // 获取用户信息，可能没有去获取，就resolve了
+  getUserInfo: function () {
+    return getSetting().then(res => {
+      if (res.authSetting['scope.userInfo']) {
+        return getUserInfo({ lang: 'zh_CN'}).then(res => {
+          this.globalData.userInfo = res.userInfo;
+
+          if (this.userInfoReadyCallback) {
+            this.userInfoReadyCallback(res)
+          }
+        });
+      }
+    })
+  },
+
+  // 记录访问，如果没有获取到用户信息，调用什么都不会执行。
+  recordAccess: function () {
+    const { userInfo } = this.globalData
+    if (userInfo && userInfo.nickName) {
+      const { nickName, avatarUrl, gender, province, city } = userInfo
+      request({
+        url: '/access',
+        data: { nickName, avatarUrl, gender, province, city }
+      })
+    }
   },
 
   globalData: {
     sessionid: '',
-    userInfo: {}
+    userInfo: null
   }
 })

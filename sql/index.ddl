@@ -8,8 +8,8 @@ sessionKey CHAR(64),
 nickName CHAR(32),
 avatarUrl CHAR(255),
 gender TINYINT,
-province CHAR(8),
-city CHAR(8),
+province CHAR(32),
+city CHAR(32),
 firstTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 lastTime TIMESTAMP ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 KEY(openid)
@@ -33,6 +33,7 @@ loaner CHAR(64),
 debtor CHAR(64),
 sponsor CHAR(8),
 status CHAR(16),
+createTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 KEY(id)
 );
 
@@ -48,6 +49,7 @@ event CHAR(8),
 changeMoney DEC(14,2),
 principal DEC(14,2),
 interest DEC(14,2),
+createTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 PRIMARY KEY(id),
 KEY(id),
 KEY(blid)

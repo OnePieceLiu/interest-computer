@@ -4,6 +4,17 @@
   box-sizing: border-box;
 } 
 
+.get-userinfo-container{
+  height: 100%;
+  padding-top: 100rpx;
+  text-align: center;
+}
+
+.get-userinfo-btn{
+  width: 350rpx;
+  margin-top: 100rpx;
+}
+
 .bb1pxe5{
   border-bottom: 1px solid #e5e5e5;
 }
