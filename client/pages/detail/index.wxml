@@ -3,13 +3,13 @@
 <view class="container" wx:if="{{!errMsg}}">
   <view class="dyad-container">
     <view class="{{blInfo.debtorInfo ? 'party-info' : 'disabled-party-info'}}">
-      <text class="party-title">借方:</text>
+      <text class="party-title">借入方:</text>
       <image src="{{blInfo.debtorInfo ? blInfo.debtorInfo.avatarUrl : defaultAvatar}}" class="avatar" />
       <text class="nickname">{{blInfo.debtorInfo ? blInfo.debtorInfo.nickName : '待好友确认'}}</text>
     </view>
     <view style="border:1rpx dashed #e5e5e5"></view>
     <view class="{{blInfo.loanerInfo ? 'party-info' : 'disabled-party-info'}}">
-      <text class="party-title">贷方:</text>
+      <text class="party-title">借出方:</text>
       <image src="{{blInfo.loanerInfo ? blInfo.loanerInfo.avatarUrl : defaultAvatar}}" class="avatar" />
       <text class="nickname">{{blInfo.loanerInfo ? blInfo.loanerInfo.nickName : '待好友确认'}}</text>
     </view>

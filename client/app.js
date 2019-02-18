@@ -20,8 +20,8 @@ App({
           code: res.code
         }
       })
-    }).then(res => {
-      this.globalData.sessionid = res.data.sessionid
+    }).then(sessionid => {
+      this.globalData.sessionid = sessionid
     })
   },
 

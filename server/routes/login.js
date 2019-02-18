@@ -17,5 +17,5 @@ module.exports = async (ctx, next) => {
   const { openid, session_key } = data
   await redis.set(sessionid, JSON.stringify({ openid, session_key }), 'EX', 60 * 60)    //一小时过期
 
-  ctx.body = { code: 0, sessionid }
+  ctx.body = { code: 0, data: sessionid }
 }

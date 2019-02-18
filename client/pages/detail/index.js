@@ -41,38 +41,35 @@ Page({
     this.setData({ id }, () => this.getBlInfo())
   },
 
-  getBlInfo(){
-    app.loginP
-    .then(() => request({
+  getBlInfo() {
+    app.loginP.then(() => request({
       url: '/record',
       data: { id: this.data.id }
     }))
-    .then(({ data }) => {
-      const blInfo = data.data;
-      blInfo.cycleUnit = getEnumName(cycleUnits, blInfo.cycleUnit)
-      blInfo.afterCycle = getEnumName(afterCycles, blInfo.afterCycle)
-      blInfo.repaymentType = getEnumName(repaymentTypes, blInfo.repaymentType)
+      .then(blInfo => {
+        blInfo.cycleUnit = getEnumName(cycleUnits, blInfo.cycleUnit)
+        blInfo.afterCycle = getEnumName(afterCycles, blInfo.afterCycle)
+        blInfo.repaymentType = getEnumName(repaymentTypes, blInfo.repaymentType)
 
-      this.setData({ blInfo }, ()=>this.getMoneyChanges())
+        this.setData({ blInfo }, () => this.getMoneyChanges())
 
-    },({ data }) => {
-      const errMsg = data.errMsg ? data.errMsg : data;
-      this.setData({ errMsg })
-    })
+      }, ({ errMsg }) => {
+        this.setData({ errMsg })
+      })
   },
 
-  getMoneyChanges(){
-    const {blInfo} = this.data;
-    if(blInfo.status !== 'WAIT_CONFIRM'){
+  getMoneyChanges() {
+    const { blInfo } = this.data;
+    if (blInfo.status !== 'WAIT_CONFIRM') {
       request({
         url: '/moneyChanges',
         data: { blid: blInfo.id }
-      }).then(({data})=>{
-        const done = data.data.done.map(e => {
+      }).then(data => {
+        const done = data.done.map(e => {
           e.date = e.date.slice(0, 10)
           return e;
         })
-        const todo = data.data.todo.map(e => {
+        const todo = data.todo.map(e => {
           e.date = e.date.slice(0, 10)
           return e;
         })
@@ -97,7 +94,7 @@ Page({
         viewer: this.data.blInfo.viewer
       },
       method: 'POST'
-    }).then(()=>this.getBlInfo())
+    }).then(() => this.getBlInfo())
   },
 
   toggleRepayModal: function () {
@@ -120,7 +117,7 @@ Page({
 
     return request({
       url: '/repay',
-      data: {blid, date, amount},
+      data: { blid, date, amount },
       method: 'POST'
     }).then(() => {
       this.getMoneyChanges()

@@ -66,9 +66,9 @@ Page({
       data: {
         loanDate, cycle, cycleUnit, loanAmount, rate, afterCycle, repaymentType, sponsor
       }
-    }).then(({ data }) => {
+    }).then(id => {
       wx.navigateTo({
-        url: `../detail/index?id=${data.data}`,
+        url: `../detail/index?id=${id}`,
       })
     })
   }

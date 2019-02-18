@@ -39,10 +39,12 @@ const request = function (options) {
   }
 
   return pify('request')(Object.assign({}, options, { header })).then(res => {
-    if (res.statusCode !== 200 || res.data.code !== 0) {
-      throw res
+    if (res.statusCode !== 200) {
+      throw { errMsg: res.data }
+    } else if (res.data.code !== 0) {
+      throw { errMsg: res.data.errMsg }
     } else {
-      return res
+      return res.data.data
     }
   })
 }
