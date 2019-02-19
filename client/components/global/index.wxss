@@ -1,0 +1,6 @@
+/* components/global/index.wxss */
+.container {
+  height: 100vh;
+  box-sizing: border-box;
+  overflow: scroll;
+} 

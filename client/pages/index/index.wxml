@@ -1,6 +1,4 @@
-<include src="../../comps/authorize.wxml" />
-
-<view class="container">
+<global>
   <view class="index">
     <navigator url="../record/index?type=borrow">
       <button>记录借入</button>
@@ -9,4 +7,4 @@
       <button>记录借出</button>
     </navigator>
   </view>
-</view>
+</global>

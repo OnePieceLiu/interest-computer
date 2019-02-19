@@ -1,6 +1,5 @@
 const { request } = require('../../utils/pify')
 const { cycleUnits, afterCycles, repaymentTypes, getEnumName } = require('../../utils/enums')
-const { uiFuns, uiData } = require('../../utils/userInfo')
 const app = getApp()
 const today = (new Date()).format()
 
@@ -24,20 +23,16 @@ Page({
     values: {
       date: today,
       amount: 0
-    },
-
-    ...uiData
+    }
   },
 
-  ...uiFuns,
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    this.initUserInfo();
-
-    const { id = 1 } = options
+    const { id = 19 } = options
+    console.log('id', id)
     this.setData({ id }, () => this.getBlInfo())
   },
 

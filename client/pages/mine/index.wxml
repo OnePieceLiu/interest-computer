@@ -1,6 +1,4 @@
-<include src="../../comps/authorize.wxml" />
-
-<view class="container">
+<global>
   <view class="ic-tab">
     <view data-type="borrow" bindtap="selectTab" class="{{'ic-tab-item ' + (type==='borrow' && 'tab-item-selected')}}">
       借入
@@ -22,4 +20,4 @@
   <view wx:if="{{type==='borrow'? borrowList.end : loanList.end}}" style="text-align:center; color: #999;">
     --没有更多数据了！--
   </view>
-</view>
+</global>

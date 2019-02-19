@@ -1,5 +1,5 @@
 <!--pages/record/index.wxml-->
-<view class="container">
+<global>
   <form bindsubmit="formSubmit" class="record-form">
 
     <view class="record-form-item">
@@ -91,4 +91,4 @@
       <button form-type="submit">提交</button>
     </view>
   </form>
-</view>
+</global>

@@ -1,4 +1,3 @@
-const { uiData, uiFuns } = require('../../utils/userInfo.js')
 const { request } = require('../../utils/pify.js')
 const { blStatus, getEnumName } = require("../../utils/enums.js")
 
@@ -20,17 +19,13 @@ Page({
       limit: 10,
       end: false,
       data: []
-    },
-    ...uiData
+    }
   },
-
-  ...uiFuns,
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    this.initUserInfo()
     this.getPageData()
   },
 

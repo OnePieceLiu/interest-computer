@@ -1,26 +1,4 @@
 /**app.wxss**/
-.container {
-  height: 100%;
-  box-sizing: border-box;
-} 
-
-/** 微信授权覆盖层start **/
-.get-userinfo-container{
-  position: absolute;
-  z-index: 10000;
-  top: 0;
-  width: 100vw;
-  height: 100vh;
-  padding-top: 100rpx;
-  text-align: center;
-  background-color: #fff;
-}
-
-.get-userinfo-btn{
-  width: 350rpx;
-  margin-top: 100rpx;
-}
-/** 微信授权覆盖层end **/
 
 /** 顶部tab样式start **/
 .ic-tab{

@@ -1,0 +1,4 @@
+<view class="container">
+  <authorize />
+  <slot></slot>
+</view>
