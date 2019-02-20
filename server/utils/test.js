@@ -1,20 +1,36 @@
-const { pool } = require('./mysql')
-const moment = require('moment');
+const { pool } = require("./mysql")
 
-const ts = 1550372451047
-const a = moment(ts).format('YYYY-MM-DD HH:mm:ss.SSS')
-console.log(a);
+async function test() {
+  const conn = await pool.getConnection()
+  await conn.beginTransaction()
 
-// pool.execute('select * from borrow_loan_record where createTime<?', [a])
-pool.execute('select * from money_change_record')
-  .then(([rows, fileds]) => {
-    console.log('data', typeof rows[0].principal)
-  })
+  try {
+    await conn.execute(
+      `INSERT INTO wx_user (openid, sessionKey, nickName, avatarUrl, gender, country, province, city) 
+      VALUES(?,?,?,?,?,?,?,?)`,
+      ["test", "abcd", "zpq", "http://www.zhoupengqiang.cn/123", 1, "中国", "上海", "闵行"]
+    )
 
-// const moment = require('moment')
+    await conn.execute(
+      `INSERT INTO wx_user (openid, sessionKey, nickName, avatarUrl, gender, country, province, city) 
+      VALUES(?,?,?,?,?,?,?,?)`,
+      ["test2", "abcd2", "zpq2", "http://www.zhoupengqiang.cn/123", 1, 'china', "上海", "闵行"]
+    )
 
-// const date1 = moment('1999-12-31')
+    await conn.commit()
+    await conn.release()
 
-// const date2 = moment('2000-01-01');
+    console.log('success!!!')
+  } catch (err) {
+    await conn.rollback()
+    await conn.release()
+    console.log("catch error", err.name, err.message)
+    throw err
+  }
+}
 
-// console.log(date2.diff(date1, 'd'))
+test().then(() => {
+  console.log("test finished!")
+}, () => {
+  console.log(pool.pool._allConnections.length, pool.pool._freeConnections.length)
+})

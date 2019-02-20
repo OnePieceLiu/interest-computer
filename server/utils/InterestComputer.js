@@ -9,14 +9,16 @@ const { cycle2char } = require('./enums')
 
 class InterestComputer {
   // repaymentRecords 的 date应该是按时间正序排列好的
-  constructor(lastRecord, blInfo, repaymentRecords = []) {
+  constructor({ lastRecord, blInfo, repaymentRecords = [], conn }) {
+    console.log('repaymentRecords', repaymentRecords)
     if (Number(lastRecord.blid) !== Number(blInfo.id)) {
-      throw '借贷单下没有该还款单！'
+      throw new Error('借贷单下没有该还款单！')
     }
 
     this.lastRecord = lastRecord;
     this.blInfo = blInfo;
     this.repaymentRecords = repaymentRecords;
+    this.conn = conn;
     this.payoff = false;  //是否还清
 
     // 整个计算过程，blinfo是不变的
@@ -65,7 +67,6 @@ class InterestComputer {
   }
 
   async compute() {
-    this.conn = await pool.getConnection()
 
     await this.deleteBeforeCompute()
 
@@ -157,6 +158,8 @@ class InterestComputer {
 
   async settleToNow() {
     const nowDate = moment().format('YYYY-MM-DD')
+    if (nowDate === this.changeDate) return;
+
     this.event = '按天生息'
     this.changeMoney = this.computeInterest(nowDate)
     this.changeDate = nowDate
@@ -187,7 +190,6 @@ class InterestComputer {
 
     // 如果是FINISHED状态，后续的未确认的还款申请其实应该删除了！暂时不做了
 
-    this.conn.release();
     return result;
   }
 
@@ -201,8 +203,8 @@ class InterestComputer {
     return cycleInterest * interestDays / periodDays;
   }
 
-  static async create(lastRecord, blInfo, repaymentRecords = []) {
-    const ic = new InterestComputer(lastRecord, blInfo, repaymentRecords)
+  static async create({ lastRecord, blInfo, repaymentRecords = [], conn }) {
+    const ic = new InterestComputer({ lastRecord, blInfo, repaymentRecords, conn })
     return await ic.compute()
   }
 }

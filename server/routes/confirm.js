@@ -12,44 +12,52 @@ module.exports = async (ctx, next) => {
 
   if (status === 'WAIT_CONFIRM') {
     const conn = await pool.getConnection()
+    await conn.beginTransaction()
 
-    // 先把确认人填入 记录中
-    await conn.execute(`UPDATE borrow_loan_record SET ${sponsor === 'loaner' ? 'debtor' : 'loaner'}=? where id=?`, [openid, blid])
+    try {
+      // 先把确认人填入 记录中
+      await conn.execute(`UPDATE borrow_loan_record SET ${sponsor === 'loaner' ? 'debtor' : 'loaner'}=? where id=?`, [openid, blid])
 
-    // 插入 该借贷单 首条 money_change_record 记录
-    const [res] = await conn.execute(
-      `INSERT INTO money_change_record (blid, status, changeOrder, date, event, changeMoney, principal, interest) 
-      VALUES(?, ?, ?, ?, ?, ?, ?, ?);`,
-      [blid, 'DONE', 1, loanDate, '借钱', loanAmount, loanAmount, 0]
-    )
-    conn.release();
+      // 插入 该借贷单 首条 money_change_record 记录
+      const [res] = await conn.execute(
+        `INSERT INTO money_change_record (blid, status, changeOrder, date, event, changeMoney, principal, interest) 
+        VALUES(?, ?, ?, ?, ?, ?, ?, ?);`,
+        [blid, 'DONE', 1, loanDate, '借钱', loanAmount, loanAmount, 0]
+      )
 
-    // 准备 利息计算器的参数
-    const lastRecord = {
-      id: res.insertId,
-      blid,
-      status: 'DONE',
-      changeOrder: 1,
-      date: loanDate,
-      event: '借钱',
-      changeMoney: loanAmount,
-      principal: loanAmount,
-      interest: 0
+      // 准备 利息计算器的参数
+      const lastRecord = {
+        id: res.insertId,
+        blid,
+        status: 'DONE',
+        changeOrder: 1,
+        date: loanDate,
+        event: '借钱',
+        changeMoney: loanAmount,
+        principal: loanAmount,
+        interest: 0
+      }
+
+      const cycleEndDate = moment(loanDate).add(cycle, cycle2char[cycleUnit])
+      const now = moment();
+      const repaymentRecords = []
+      if (afterCycle === 'payoff' && cycleEndDate.isBefore(now)) {
+        repaymentRecords.push({
+          changeMoney: - loanAmount * (100 + rate) / 100,
+          date: cycleEndDate.format('YYYY-MM-DD')
+        })
+      }
+
+      await IC.create({ lastRecord, blInfo, repaymentRecords, conn })
+      await conn.commit()
+      await conn.release()
+
+      ctx.body = { code: 0, data: 'success' }
+    } catch (err) {
+      await conn.rollback()
+      await conn.release()  //其实release是一个同步函数
+      throw err
     }
-
-    const cycleEndDate = moment(loanDate).add(cycle, cycle2char[cycleUnit])
-    const now = moment();
-    const repaymentRecords = []
-    if (afterCycle === 'payoff' && cycleEndDate.isBefore(now)) {
-      repaymentRecords.push({
-        changeMoney: - loanAmount * (100 + rate) / 100,
-        date: cycleEndDate.format('YYYY-MM-DD')
-      })
-    }
-
-    await IC.create(lastRecord, blInfo, repaymentRecords)
-
-    ctx.body = { code: 0, data: 'success' }
   } else if (status === 'CREATED') {
     ctx.body = { code: 1, data: '已经有人确认了这笔借款！' }
   } else if (status === 'CLOSED') {

@@ -1,4 +1,4 @@
 <view class="container">
   <authorize />
-  <slot></slot>
+  <slot err-msg="{{errMsg}}"></slot>
 </view>

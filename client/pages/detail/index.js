@@ -38,7 +38,7 @@ Page({
 
   getBlInfo() {
     app.loginP.then(() => request({
-      url: '/record',
+      url: '/detail',
       data: { id: this.data.id }
     }))
       .then(blInfo => {
@@ -121,12 +121,12 @@ Page({
   },
 
   repayConfirm: function (e) {
-    console.log('repayConfirm', e.target.dataset)
-    // return request({
-    //   url: '/repayConfirm',
-    //   data: {id},
-    //   method: 'POST'
-    // })
+    const {id} = e.target.dataset 
+    return request({
+      url: '/repayConfirm',
+      data: {id},
+      method: 'POST'
+    }).then(() => this.getMoneyChanges())
   },
 
   /**

@@ -17,12 +17,6 @@ Component({
     hasUserInfo: false
   },
 
-  lifetimes: {
-    attached: function () {
-      this.initUserInfo()
-    }
-  },
-
   attached: function () {
     this.initUserInfo()
   },
