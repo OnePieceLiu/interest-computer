@@ -1,1 +1,4 @@
 /* pages/test/index.wxss */
+.test {
+  padding-top: 500rpx;
+}

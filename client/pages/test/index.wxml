@@ -1,3 +1,6 @@
 <global>
-  <view>test</view>
+  <view class="test">
+    <view bindtap="throwError">error</view>
+    <view bindtap="giveInfo">info</view>
+  </view>
 </global>

@@ -1,0 +1,29 @@
+.message-container{
+  position: fixed;
+  z-index: 1000;
+  width: 100vw;
+}
+
+.msg-item-info, .msg-item-error{
+  display: flex;
+  justify-content: center;
+  width: 80%;
+  border-radius: 4px;
+  padding: 10px;
+  background-color: #fff;
+  margin: 10px auto;
+}
+
+.msg-item-info {
+  border: 1px solid #1AAD16;
+}
+
+.msg-item-error {
+  border: 1px solid #ff0000;
+}
+
+.msg-text{
+  display: block;
+  margin-left: 10px;
+  word-break:break-all;
+}

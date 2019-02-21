@@ -1,0 +1,5 @@
+<view class="message-container">
+  <view wx:for="{{msgs}}" wx:key="item.id" class="{{'msg-item-'+item.level}}">
+    <text class="msg-text"> {{item.msg}}</text>
+  </view>
+</view>

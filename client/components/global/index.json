@@ -1,6 +1,7 @@
 {
   "component": true,
   "usingComponents": {
-    "authorize": "../authorize/index"
+    "authorize": "../authorize/index",
+    "message": "../message/index"
   }
 }

@@ -1,4 +1,6 @@
 // pages/test/index.js
+const app = getApp();
+
 Component({
 
   properties: {
@@ -20,6 +22,14 @@ Component({
   methods: {
     onLoad: function (options) {
       console.log(this.data.type, this.data.errMsg)
+    },
+
+    throwError: function(){
+      app.icError('throw error' + Math.random())
+    },
+
+    giveInfo: function(){
+      app.icInfo('give info' + Math.random())
     },
 
     /**
