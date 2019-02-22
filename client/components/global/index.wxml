@@ -1,5 +1,6 @@
 <view class="container">
   <authorize />
   <message />
+  <confirm />
   <slot err-msg="{{errMsg}}"></slot>
 </view>

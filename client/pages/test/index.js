@@ -32,6 +32,35 @@ Component({
       app.icInfo('give info' + Math.random())
     },
 
+    confirm: function(){
+      app.icConfirm({
+        title: '哈哈哈',
+        content: '你欠我两千元',
+        onOk: function(){
+          return new Promise((resolve, reject)=>{
+            resolve('不急，过两天还！')
+          })
+        },
+        onCancel: function(){
+          throw new Error('还不起了！')
+        }
+      }).then(data=>{
+        console.log('弹窗已经关闭', data)
+      }, err=>{
+        console.error(err.message)
+      })
+    },
+
+    confirmOk: function(){
+      app.icConfirm({
+        content: '没有取消的提示',
+        noCancel: true
+      }).then(data=>{
+        console.log('弹窗已关闭')
+      })
+      
+    },
+
     /**
      * 生命周期函数--监听页面初次渲染完成
      */

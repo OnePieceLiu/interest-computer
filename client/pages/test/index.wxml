@@ -1,6 +1,8 @@
 <global>
   <view class="test">
-    <view bindtap="throwError">error</view>
-    <view bindtap="giveInfo">info</view>
+    <button bindtap="throwError">error</button>
+    <button bindtap="giveInfo">info</button>
+    <button bindtap="confirm">confirm</button>
+    <button bindtap="confirmOk">confirm no cancel</button>
   </view>
 </global>

@@ -1,1 +1,47 @@
-/* components/confirm/index.wxss */
+.confirm-container{
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  padding-top: 200rpx;
+}
+
+.confirm-area{
+  width: 80%;
+  background-color: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 4px;
+  margin: 0 auto;
+  padding: 10px 45rpx;
+  text-align: center;
+}
+
+.confirm-title{
+  font-size: 18px;
+}
+
+.confirm-content{
+  margin: 15px auto;
+  color: #333;
+  display: inline-block;
+  text-align: left;
+}
+
+.confirm-buttons{
+  display: flex;
+  justify-content: center;
+  margin-bottom: 5px;
+}
+
+.confirm-buttons > .first-button{
+  margin-right: 40rpx;
+}
+
+.confirm-buttons > .only-btn{
+  width: 50%;
+}
+
+.confirm-buttons > .mini-btn{
+  font-size: 16px;
+}

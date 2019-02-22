@@ -1,2 +1,17 @@
 <!--components/confirm/index.wxml-->
-<text>components/confirm/index.wxml</text>
+<view class="confirm-container" style="display: {{show ? 'block':'none'}};">
+  <view class="confirm-area">
+    <view class="confirm-title">{{title}}</view>
+    <view class="confirm-content">{{content}}</view>
+    <view class="confirm-buttons">
+      <button size="mini" bindtap="cancelHandler" 
+        class="first-button mini-btn" wx:if="{{!noCancel}}">
+        取消
+      </button>
+      <button size="mini" bindtap="okHandler" 
+        class="{{'mini-btn ' + (noCancel && 'only-btn') }}" type="primary">
+        确定
+      </button>
+    </view>
+  </view>
+</view>

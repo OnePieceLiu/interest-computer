@@ -2,6 +2,7 @@
   "component": true,
   "usingComponents": {
     "authorize": "../authorize/index",
-    "message": "../message/index"
+    "message": "../message/index",
+    "confirm": "../confirm/index"
   }
 }
