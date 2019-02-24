@@ -59,11 +59,11 @@ module.exports = async (ctx, next) => {
       throw err
     }
   } else if (status === 'CREATED') {
-    ctx.body = { code: 1, data: '已经有人确认了这笔借款！' }
+    throw new Error('已经有人确认了这笔借款！')
   } else if (status === 'CLOSED') {
-    ctx.body = { code: 1, data: '借款已经被关闭，请联系好友确认！' }
+    throw new Error('借款已经被关闭，请联系好友确认！')
   } else {
-    ctx.body = { code: 1, data: '借款单状态不对！' }
+    throw new Error('借款单状态不对！')
   }
 
 }

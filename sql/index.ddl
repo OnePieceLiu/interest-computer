@@ -18,7 +18,6 @@ KEY(openid)
 
 // 测试过，int modify为bigint, 数据完全兼容。
 // status [WAIT_CONFIRM, CREATED, CLOSED, FINISHED]
-
 CREATE TABLE borrow_loan_record (
 id INT PRIMARY KEY AUTO_INCREMENT,
 loanDate DATE,
@@ -38,8 +37,9 @@ createTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 KEY(id)
 );
 
-// events [借钱、还钱、利息转本金、周期结息、按天生息、还款前结息]
 
+// events [借钱、还钱、利息转本金、周期结息、按天生息、还款前结息]
+// status [WAIT_CONFIRM, DONE, CLOSED]
 CREATE TABLE money_change_record (
 id INT AUTO_INCREMENT,
 blid INT,

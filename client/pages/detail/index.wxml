@@ -67,6 +67,9 @@
           <button wx:if="{{blInfo.viewer==='loaner'}}" data-id="{{item.id}}" bindtap="repayConfirm">
             确认
           </button>
+          <button wx:if="{{blInfo.viewer==='debtor'}}" data-id="{{item.id}}" bindtap="repayClose">
+            关闭
+          </button>
         </view>
       </view>
     </view>

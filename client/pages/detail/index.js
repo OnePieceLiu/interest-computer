@@ -78,7 +78,7 @@ Page({
       url: '/close',
       data: { id: this.data.id },
       method: 'POST'
-    })
+    }).then(() => this.getBlInfo())
   },
 
   confirmRecord: function () {
@@ -118,6 +118,15 @@ Page({
       this.getMoneyChanges()
       this.toggleRepayModal()
     })
+  },
+
+  repayClose: function (e){
+    const { id } = e.target.dataset
+    request({
+      url: '/repayClose',
+      data: { id },
+      method: 'POST'
+    }).then(() => this.getMoneyChanges())
   },
 
   repayConfirm: function (e) {
