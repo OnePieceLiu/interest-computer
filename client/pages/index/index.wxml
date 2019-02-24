@@ -1,6 +1,6 @@
 <global>
   <view class="index">
-    <navigator url="../test/index?type=borrow">
+    <navigator url="../record/index?type=borrow">
       <button>记录借入</button>
     </navigator>
     <navigator url="../record/index?type=loan">

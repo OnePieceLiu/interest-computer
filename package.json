@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "cd server && supervisor index.js"
+    "start": "cd server && NODE_ENV=dev supervisor index.js"
   },
   "repository": {
     "type": "git",

@@ -10,31 +10,33 @@ const { cycle2char } = require('./enums')
 class InterestComputer {
   // repaymentRecords 的 date应该是按时间正序排列好的
   constructor({ lastRecord, blInfo, repaymentRecords = [], conn }) {
-    console.log('repaymentRecords', repaymentRecords)
+    // console.log('repaymentRecords', repaymentRecords)
     if (Number(lastRecord.blid) !== Number(blInfo.id)) {
       throw new Error('借贷单下没有该还款单！')
     }
 
-    this.lastRecord = lastRecord;
-    this.blInfo = blInfo;
-    this.repaymentRecords = repaymentRecords;
+    this.repaymentRecords = repaymentRecords.map(e => {
+      e.changeMoney = Number(e.changeMoney) //DEC存储的是字符串
+      e.date = moment(e.date)
+      return e;
+    });
     this.conn = conn;
     this.payoff = false;  //是否还清
 
     // 整个计算过程，blinfo是不变的
     this.blid = blInfo.id;
-    this.loanDate = blInfo.loanDate;
+    this.loanDate = moment(blInfo.loanDate);
     this.cycle = blInfo.cycle;
     this.cycleUnit = blInfo.cycleUnit;
     this.momentUnit = cycle2char[blInfo.cycleUnit];
-    this.loanAmount = Number(blInfo.loanAmount);
+    this.loanAmount = Number(blInfo.loanAmount);    //DEC存储的是字符串
     this.rate = Number(blInfo.rate);
     this.afterCycle = blInfo.afterCycle;
     this.repaymentType = blInfo.repaymentType;
 
     // 整个计算过程，每次插入money_change_record前，这些都可能变化
     this.status = 'DONE';
-    this.changeDate = lastRecord.date;
+    this.changeDate = moment(lastRecord.date);
     this.changeOrder = lastRecord.changeOrder;
     this.event = lastRecord.event;
     this.changeMoney = Number(lastRecord.changeMoney);
@@ -46,12 +48,10 @@ class InterestComputer {
 
   // 计算出一个包含 changeDate的周期。 cycleStartDate <= changeDate < cycleEndDate
   computePeriod() {
-    const loanDate = moment(this.loanDate)
-    const changeDate = moment(this.changeDate)
-    const cycleNumber = changeDate.diff(loanDate, this.momentUnit)
+    const cycleNumber = this.changeDate.diff(this.loanDate, this.momentUnit)
 
-    // 这两个还是moment对象
-    this.cycleStartDate = moment(loanDate).add(cycleNumber * this.cycle, this.momentUnit)
+    // moment().add方法是修改moment对象，所以需要新创建 moment对象再add
+    this.cycleStartDate = moment(this.loanDate).add(cycleNumber * this.cycle, this.momentUnit)
     this.cycleEndDate = moment(this.cycleStartDate).add(this.cycle, this.momentUnit)
     this.periodDays = this.cycleEndDate.diff(this.cycleStartDate, 'd')
   }
@@ -61,7 +61,7 @@ class InterestComputer {
     if (this.repaymentRecords[0]) {
       return await this.conn.execute(
         `DELETE FROM money_change_record WHERE blid=? AND date>? AND status=?`,
-        [this.blid, this.repaymentRecords[0].date, 'DONE']
+        [this.blid, this.repaymentRecords[0].date.format('YYYY-MM-DD'), 'DONE']
       )
     }
   }
@@ -71,29 +71,38 @@ class InterestComputer {
     await this.deleteBeforeCompute()
 
     const now = moment(); //now 包含时分秒，同一天 也会为true。
+    console.log('start', this.cycleStartDate.format('YYYY-MM-DD HH:mm:ss'))
+    console.log('end', this.cycleEndDate.format('YYYY-MM-DD HH:mm:ss'))
+    console.log('now', now.format('YYYY-MM-DD HH:mm:ss'))
+
     while (this.cycleEndDate.isBefore(now)) {
-
-      let repaymentRecord = this.repaymentRecords[0]
-      while (repaymentRecord && repaymentRecord.date >= this.changeDate && repaymentRecord.date < this.cycleEndDate.format('YYYY-MM-DD')) {
-        if (repaymentRecord.date > this.changeDate) {
-          await this.settleBeforeRepayment(repaymentRecord.date)
-        }
-        await this.repay(repaymentRecord)
-        this.repaymentRecords.shift();
-
-        // 已经还清了，就可以直接 同步到 borrow_loan_record表中了。
-        if (this.payoff) {
-          return await this.updateBlInfo()
-        }
-        repaymentRecord = this.repaymentRecords[0];
-      }
+      await this.loopRepay(this.cycleEndDate)
+      if (this.payoff) return;
 
       await this.settleToCycleEnd();
       this.computePeriod()
     }
 
+    await this.loopRepay()
+    if (this.payoff) return;
+
     await this.settleToNow()
     await this.updateBlInfo()
+  }
+
+  async loopRepay() {
+    let repaymentRecord = this.repaymentRecords[0]
+
+    while (repaymentRecord && !repaymentRecord.date.isBefore(this.changeDate) && repaymentRecord.date.isBefore(this.cycleEndDate)) {
+      if (repaymentRecord.date.isAfter(this.changeDate)) {
+        await this.settleBeforeRepayment(repaymentRecord.date)
+      }
+      await this.repay(repaymentRecord)
+      if (this.payoff) return
+
+      this.repaymentRecords.shift();
+      repaymentRecord = this.repaymentRecords[0];
+    }
   }
 
   async settleBeforeRepayment(repayDate) {
@@ -115,7 +124,8 @@ class InterestComputer {
       this.principal = 0;
       this.interest = 0;
       this.payoff = true;
-    } if (this.repaymentType === 'principalFirst') {
+      // 清理未确认的还款申请！暂时未做
+    } else if (this.repaymentType === 'principalFirst') {
       const diff = this.principal + this.changeMoney;
       if (diff > 0) {
         this.principal = diff
@@ -139,12 +149,14 @@ class InterestComputer {
       this.interest += changeInterest;
     }
 
-    return await this.insertMoneyChange()
+    record.id ? await this.updateRepayRecord(record.id) : await this.insertMoneyChange();
+    if (this.payoff) await this.updateBlInfo()
+    return
   }
 
   async settleToCycleEnd() {
     this.changeMoney = this.computeInterest(this.cycleEndDate);
-    this.changeDate = this.cycleEndDate.format('YYYY-MM-DD')
+    this.changeDate = this.cycleEndDate
     if (this.afterCycle === 'compound') {
       this.event = '利息转本金'
       this.principal += this.changeMoney;
@@ -157,8 +169,8 @@ class InterestComputer {
   }
 
   async settleToNow() {
-    const nowDate = moment().format('YYYY-MM-DD')
-    if (nowDate === this.changeDate) return;
+    const nowDate = moment().startOf('day')
+    if (nowDate.isSame(this.changeDate, 'day')) return;
 
     this.event = '按天生息'
     this.changeMoney = this.computeInterest(nowDate)
@@ -174,7 +186,18 @@ class InterestComputer {
     const result = await this.conn.execute(
       `INSERT INTO money_change_record (blid, status, changeOrder, date, event, changeMoney, principal, interest) 
       VALUES(?, ?, ?, ?, ?, ?, ?, ?);`,
-      [blid, status, ++this.changeOrder, changeDate, event, changeMoney, principal, interest]
+      [blid, status, ++this.changeOrder, changeDate.format('YYYY-MM-DD'), event, changeMoney, principal, interest]
+    )
+
+    return result;
+  }
+
+  async updateRepayRecord(id) {
+    const { status, principal, interest } = this;
+
+    const result = await this.conn.execute(
+      `UPDATE money_change_record SET status=?, changeOrder=?, principal=?, interest=? WHERE id=?`,
+      [status, ++this.changeOrder, principal, interest, id]
     )
 
     return result;
@@ -187,8 +210,6 @@ class InterestComputer {
       `UPDATE borrow_loan_record SET status=?, principal=?, interest=? WHERE id=?`,
       [payoff ? 'FINISHED' : 'CREATED', principal, interest, blid]
     )
-
-    // 如果是FINISHED状态，后续的未确认的还款申请其实应该删除了！暂时不做了
 
     return result;
   }

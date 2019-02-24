@@ -15,7 +15,7 @@ const repaymentTypes = [
 const blStatus = [
   { value: "WAIT_CONFIRM", name: '待确认' },
   { value: "CREATED", name: '进行中' },
-  { value: "FINISHED", name: '一还清' },
+  { value: "FINISHED", name: '已还清' },
   { value: "CLOSED", name: '已关闭' }
 ]
 

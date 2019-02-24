@@ -39,11 +39,11 @@ module.exports = async (ctx, next) => {
       }
 
       const cycleEndDate = moment(loanDate).add(cycle, cycle2char[cycleUnit])
-      const now = moment();
+      const startOfToday = moment().startOf('day');
       const repaymentRecords = []
-      if (afterCycle === 'payoff' && cycleEndDate.isBefore(now)) {
+      if (afterCycle === 'payoff' && !cycleEndDate.isAfter(startOfToday)) {
         repaymentRecords.push({
-          changeMoney: - loanAmount * (100 + rate) / 100,
+          changeMoney: - loanAmount * (100 + Number(rate)) / 100,
           date: cycleEndDate.format('YYYY-MM-DD')
         })
       }

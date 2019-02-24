@@ -121,12 +121,12 @@ Page({
   },
 
   repayConfirm: function (e) {
-    const {id} = e.target.dataset 
+    const { id } = e.target.dataset
     return request({
       url: '/repayConfirm',
-      data: {id},
+      data: { id },
       method: 'POST'
-    }).then(() => this.getMoneyChanges())
+    }).then(() => this.getBlInfo())
   },
 
   /**

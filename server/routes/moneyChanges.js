@@ -1,4 +1,5 @@
 const { pool } = require('../utils/mysql')
+const moment = require('moment')
 
 module.exports = async (ctx, next) => {
   const { openid, query } = ctx
@@ -17,5 +18,16 @@ module.exports = async (ctx, next) => {
 
   conn.release()
 
-  ctx.body = { code: 0, data: { done, todo } }
+  ctx.body = {
+    code: 0,
+    data: {
+      done: done.map(formatWithDateObj),
+      todo: todo.map(formatWithDateObj)
+    }
+  }
+}
+
+function formatWithDateObj(e) {
+  e.date = moment(e.date).format('YYYY-MM-DD')
+  return e
 }

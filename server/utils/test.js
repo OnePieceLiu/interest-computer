@@ -1,36 +1,25 @@
 const { pool } = require("./mysql")
+const moment = require('moment')
 
 async function test() {
-  const conn = await pool.getConnection()
-  await conn.beginTransaction()
+  const [res] = await pool.execute('INSERT INTO test (tdatetime, ttimestamp) VALUES(?,?)',
+    ['2017-10-10 00:00:00', '2017-10-10 00:00:00'])
 
-  try {
-    await conn.execute(
-      `INSERT INTO wx_user (openid, sessionKey, nickName, avatarUrl, gender, country, province, city) 
-      VALUES(?,?,?,?,?,?,?,?)`,
-      ["test", "abcd", "zpq", "http://www.zhoupengqiang.cn/123", 1, "中国", "上海", "闵行"]
-    )
+  const [[testInfo]] = await pool.execute(`SELECT * FROM test where id=?`, [res.insertId])
 
-    await conn.execute(
-      `INSERT INTO wx_user (openid, sessionKey, nickName, avatarUrl, gender, country, province, city) 
-      VALUES(?,?,?,?,?,?,?,?)`,
-      ["test2", "abcd2", "zpq2", "http://www.zhoupengqiang.cn/123", 1, 'china', "上海", "闵行"]
-    )
+  console.log(moment(testInfo.tdatetime).format('YYYY-MM-DD HH:mm:ss'), moment(testInfo.ttimestamp).format('YYYY-MM-DD HH:mm:ss'))
+  console.log(testInfo.tdatetime, testInfo.ttimestamp)
 
-    await conn.commit()
-    await conn.release()
-
-    console.log('success!!!')
-  } catch (err) {
-    await conn.rollback()
-    await conn.release()
-    console.log("catch error", err.name, err.message)
-    throw err
-  }
 }
 
-test().then(() => {
-  console.log("test finished!")
-}, () => {
-  console.log(pool.pool._allConnections.length, pool.pool._freeConnections.length)
-})
+// test().then(data => {
+//   console.log('test finished!', moment('2017-10-10 00:00:00').format('YYYY-MM-DD HH:mm:ss'))
+// }, () => {
+//   console.log(pool.pool._allConnections.length, pool.pool._freeConnections.length)
+// })
+
+var a = moment()
+var b = moment(a).startOf('day')
+var c = moment(a).endOf('day')
+
+console.log(a, b, c)
