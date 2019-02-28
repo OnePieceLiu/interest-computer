@@ -1,0 +1,8 @@
+<!--pages/detail/components/section/index.wxml-->
+<view class="ic-section">
+  <view class="section-header">
+    <text class="section-title">{{title}}</text>
+    <slot name="tool"></slot>
+  </view>
+  <slot name="list"></slot>
+</view>

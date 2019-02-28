@@ -1,0 +1,11 @@
+/* pages/detail/components/repayItem/index.wxss */
+.repay-item{
+  border-bottom: 1px solid #e5e5e5;
+  padding: 4px 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.text-button{
+  color: #1AAD16;
+}

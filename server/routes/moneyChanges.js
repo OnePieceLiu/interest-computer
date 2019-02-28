@@ -1,4 +1,5 @@
 const { pool } = require('../utils/mysql')
+const { nFormatter } = require('../utils/nFormatter')
 const moment = require('moment')
 
 module.exports = async (ctx, next) => {
@@ -21,13 +22,20 @@ module.exports = async (ctx, next) => {
   ctx.body = {
     code: 0,
     data: {
-      done: done.map(formatWithDateObj),
-      todo: todo.map(formatWithDateObj)
+      done: done.map(formatObj),
+      todo: todo.map(formatObj)
     }
   }
 }
 
-function formatWithDateObj(e) {
+function formatObj(e) {
+  console.log(e.changeMoney, e.principal, e.interest)
+
+  e.changeMoney = nFormatter(e.changeMoney, { withSign: true })
+  e.total = nFormatter(Number(e.principal) + Number(e.interest))
+  e.principal = nFormatter(e.principal)
+  e.interest = nFormatter(e.interest)
+
   e.date = moment(e.date).format('YYYY-MM-DD')
   return e
 }

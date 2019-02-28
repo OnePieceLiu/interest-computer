@@ -1,5 +1,6 @@
 const { request } = require('../../utils/pify')
 const { cycleUnits, afterCycles, repaymentTypes } = require('../../utils/enums')
+const app = getApp();
 
 Page({
 
@@ -56,7 +57,7 @@ Page({
 
     if (!loanDate || !cycle || typeof cycleUnit === 'undefined' || !loanAmount
       || !rate || !afterCycle || !repaymentType) {
-      console.log('填写不合格，请仔细检查表单输入！')
+      app.icError('填写不合格，请检查表单输入！')
       return
     }
 
@@ -70,7 +71,7 @@ Page({
       wx.navigateTo({
         url: `../detail/index?id=${id}`,
       })
-    })
+    }).catch(err=>app.icError(err.errMsg))
   }
 })
 

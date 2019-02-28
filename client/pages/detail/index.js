@@ -13,8 +13,8 @@ Page({
     errMsg: '',
     repayModal: false,
     moneyChanges: {
-      done: undefined,
-      todo: undefined
+      done: [],
+      todo: []
     },
     blInfo: {},
     defaultAvatar: '../../images/profile.jpeg',
@@ -31,7 +31,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    const { id = 19 } = options
+    const { id = 29 } = options
     console.log('id', id)
     this.setData({ id }, () => this.getBlInfo())
   },
@@ -121,7 +121,7 @@ Page({
   },
 
   repayClose: function (e){
-    const { id } = e.target.dataset
+    const {id} = e.detail
     request({
       url: '/repayClose',
       data: { id },
@@ -130,7 +130,7 @@ Page({
   },
 
   repayConfirm: function (e) {
-    const { id } = e.target.dataset
+    const {id} = e.detail
     return request({
       url: '/repayConfirm',
       data: { id },

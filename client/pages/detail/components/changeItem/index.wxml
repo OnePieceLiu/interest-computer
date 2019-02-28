@@ -1,0 +1,20 @@
+<!--pages/detail/components/changeItem/index.wxml-->
+<view class="change-item" bindtap='toggleCollapse'>
+  <view class="time-event-amount">
+    <text>{{item.date}}</text>
+    <view style="display:inline-block;">
+      <text class="same-width-font">{{item.total}}元</text>
+      <view class="{{'icon-down ' + (!collapse && 'overturn')}}"></view>
+    </view>
+  </view>
+  <view wx:if="{{!collapse}}" class="collapse-content">
+    <view >
+      <view>未还本金:{{item.principal}}元</view>
+      <view>未还利息:{{item.interest}}元</view>
+    </view>
+    <view class="change-amount" >
+      <text>{{item.event}}</text>
+      <text class="same-width-font">{{item.changeMoney}}元</text>
+    </view>
+  </view>
+</view>

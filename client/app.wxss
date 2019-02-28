@@ -1,9 +1,5 @@
 /**app.wxss**/
 
-/* view, text{
-  font-size: 38rpx;
-} */
-
 /** 顶部tab样式start **/
 .ic-tab{
   height: 30px;

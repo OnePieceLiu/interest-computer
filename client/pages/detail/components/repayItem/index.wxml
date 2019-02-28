@@ -1,0 +1,13 @@
+<!--pages/detail/components/repayItem/index.wxml-->
+<view class="repay-item">
+  <view>{{item.date}}</view>
+  <view>{{item.changeMoney}}</view>
+  <view wx:if="{{viewer==='loaner'}}" class="text-button" 
+    data-id="{{item.id}}" bindtap="repayConfirm">
+    确认
+  </view>
+  <view wx:if="{{viewer==='debtor'}}" class="text-button" 
+    data-id="{{item.id}}" bindtap="repayClose">
+    关闭
+  </view>
+</view>

@@ -1,52 +1,8 @@
 /* pages/confirm/index.wxss */
-.dyad-container{
-  padding: 20rpx 50rpx;
-  display: flex;
-  justify-content: space-between;
-}
-
-.disabled-party-info{
-  width: 300rpx;
-  white-space: nowrap;
-  overflow: hidden;
-  opacity: 0.5;
-}
-
-.party-info{
-  width: 300rpx;
-  white-space: nowrap;
-  overflow: hidden;
-}
-
-.party-title{
-  display: block;
-  width: 100%;
-}
-
-.avatar{
-  width: 100rpx;
-  height: 100rpx;
-  border-radius: 10rpx;
+.text-button{
+  color: #1AAD16;
   display: inline-block;
-  vertical-align: middle;
 }
-
-.nickname{
-  display: inline-block;
-  vertical-align: middle;
-  margin-left: 15rpx;
-}
-
-/*--------借贷单详情 start-------*/
-.detail-content{
-  display: block;
-  padding: 20rpx 50rpx;
-}
-
-.detail-item{
-  display: flex;
-}
-/*--------借贷单详情 end---------*/
 
 /*----------还款单modal start-------------*/
 .repay-modal-form{
@@ -58,7 +14,7 @@
   box-sizing: border-box;
   background-color: #fff;
   border-radius: 4px;
-  padding: 20rpx;
+  padding: 40rpx 60rpx;
 }
 .record-form-item {
   display: flex;
@@ -83,5 +39,9 @@
   top: 0;
   right: 10rpx;
 }
-
+.button-area{
+  display: flex;
+  justify-content: space-around;
+  margin-top: 30rpx;
+}
 /*----------还款单modal end-------------*/

@@ -11,6 +11,10 @@ App({
       .then(() => this.recordAccess(), err => console.log('err', err))
   },
 
+  onError: function(e){
+    console.log('app on error', e)
+  },
+
   // 登录
   login: function () {
     return login().then(res => {

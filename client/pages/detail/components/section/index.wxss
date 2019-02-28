@@ -1,0 +1,9 @@
+/* pages/detail/components/section/index.wxss */
+.section-header{
+  position: relative;
+  height: 40px;
+  line-height: 40px;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 40rpx;
+}

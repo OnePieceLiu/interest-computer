@@ -1,0 +1,13 @@
+<view class="dyad-container">
+  <view class="{{debtorInfo ? 'party-info' : 'disabled-party-info'}}">
+    <text class="party-title">借入方:</text>
+    <image src="{{debtorInfo ? debtorInfo.avatarUrl : defaultAvatar}}" class="avatar" />
+    <text class="nickname">{{debtorInfo ? debtorInfo.nickName : '待好友确认'}}</text>
+  </view>
+  <view style="border:1rpx dashed #e5e5e5"></view>
+  <view class="{{loanerInfo ? 'party-info' : 'disabled-party-info'}}">
+    <text class="party-title">借出方:</text>
+    <image src="{{loanerInfo ? loanerInfo.avatarUrl : defaultAvatar}}" class="avatar" />
+    <text class="nickname">{{loanerInfo ? loanerInfo.nickName : '待好友确认'}}</text>
+  </view>
+</view>

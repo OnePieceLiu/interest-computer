@@ -1,4 +1,10 @@
 {
   "navigationBarTitleText": "借贷详情",
-  "usingComponents": {}
+  "usingComponents": {
+    "participant": "./components/participant/index",
+    "bl-info": "./components/blInfo/index",
+    "section": "./components/section/index",
+    "change-item": "./components/changeItem/index",
+    "repay-item": "./components/repayItem/index"
+  }
 }

@@ -1,0 +1,26 @@
+<view class="detail-content">
+  <view class="detail-item">
+    <view class="detail-item-title">借贷日期：</view>
+    <view class="detail-item-value">{{blInfo.loanDate}}</view>
+  </view>
+  <view class="detail-item">
+    <view class="detail-item-title">借贷周期：</view>
+    <view class="detail-item-value">{{blInfo.cycle}}{{blInfo.cycleUnit}}</view>
+  </view>
+  <view class="detail-item">
+    <view class="detail-item-title">借贷金额：</view>
+    <view class="detail-item-value">{{blInfo.loanAmount}}元</view>
+  </view>
+  <view class="detail-item">
+    <view class="detail-item-title">借贷利率：</view>
+    <view class="detail-item-value">{{blInfo.rate}}%</view>
+  </view>
+  <view class="detail-item">
+    <view class="detail-item-title">周期结束：</view>
+    <view class="detail-item-value">{{blInfo.afterCycle}}</view>
+  </view>
+  <view class="detail-item">
+    <view class="detail-item-title">还款方式：</view>
+    <view class="detail-item-value">{{blInfo.repaymentType}}</view>
+  </view>
+</view>

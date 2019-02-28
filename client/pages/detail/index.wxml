@@ -1,78 +1,33 @@
 <global>
   <view wx:if="{{!errMsg}}">
-    <view class="dyad-container">
-      <view class="{{blInfo.debtorInfo ? 'party-info' : 'disabled-party-info'}}">
-        <text class="party-title">借入方:</text>
-        <image src="{{blInfo.debtorInfo ? blInfo.debtorInfo.avatarUrl : defaultAvatar}}" class="avatar" />
-        <text class="nickname">{{blInfo.debtorInfo ? blInfo.debtorInfo.nickName : '待好友确认'}}</text>
-      </view>
-      <view style="border:1rpx dashed #e5e5e5"></view>
-      <view class="{{blInfo.loanerInfo ? 'party-info' : 'disabled-party-info'}}">
-        <text class="party-title">借出方:</text>
-        <image src="{{blInfo.loanerInfo ? blInfo.loanerInfo.avatarUrl : defaultAvatar}}" class="avatar" />
-        <text class="nickname">{{blInfo.loanerInfo ? blInfo.loanerInfo.nickName : '待好友确认'}}</text>
-      </view>
-    </view>
-    <view class="detail-content">
-      <view class="detail-item">
-        <view class="detail-item-title">借贷日期：</view>
-        <view class="detail-item-value">{{blInfo.loanDate}}</view>
-      </view>
-      <view class="detail-item">
-        <view class="detail-item-title">借贷周期：</view>
-        <view class="detail-item-value">{{blInfo.cycle}}{{blInfo.cycleUnit}}</view>
-      </view>
-      <view class="detail-item">
-        <view class="detail-item-title">借贷金额：</view>
-        <view class="detail-item-value">{{blInfo.loanAmount}}元</view>
-      </view>
-      <view class="detail-item">
-        <view class="detail-item-title">借贷利率：</view>
-        <view class="detail-item-value">{{blInfo.rate}}%</view>
-      </view>
-      <view class="detail-item">
-        <view class="detail-item-title">周期结束：</view>
-        <view class="detail-item-value">{{blInfo.afterCycle}}</view>
-      </view>
-      <view class="detail-item">
-        <view class="detail-item-title">还款方式：</view>
-        <view class="detail-item-value">{{blInfo.repaymentType}}</view>
-      </view>
-    </view>
+
+    <participant debtorInfo="{{blInfo.debtorInfo}}" loanerInfo="{{blInfo.loanerInfo}}" />
+
+    <bl-info blInfo="{{blInfo}}" />
+
     <view class="wait-operator-container" wx:if="{{blInfo.status==='WAIT_CONFIRM'}}">
       <button wx:if="{{blInfo.sponsor===blInfo.viewer}}" bindtap="closeRecord">关闭记录</button>
       <button wx:if="{{blInfo.sponsor===blInfo.viewer}}" open-type="share">分享给好友</button>
       <button wx:if="{{blInfo.sponsor!==blInfo.viewer}}" bindtap="confirmRecord">确认无误</button>
     </view>
-    <view class="amount-change-history" wx:if="{{blInfo.status!=='WAIT_CONFIRM'}}">
-      <view>
-        <text>金额变动记录</text>
+
+    <section title="金额变动记录" wx:if="{{blInfo.status==='CREATED' || blInfo.status==='FINISHED'}}">
+      <view wx:for="{{moneyChanges.done}}" wx:key="index" style="padding: 0 40rpx" slot="list">
+        <change-item item="{{item}}" />
       </view>
-      <view wx:if="{{moneyChanges.done}}">
-        <view wx:for="{{moneyChanges.done}}" wx:key="index">
-          {{item.date}} {{item.event}} {{item.changeMoney}} {{item.principal}} {{item.interest}}
-        </view>
+    </section>
+
+    <section title="待确认还款" wx:if="{{blInfo.status==='CREATED'}}">
+      <view wx:if="{{blInfo.viewer==='debtor'}}" slot="tool"
+        bindtap="toggleRepayModal" class="text-button">
+        还款
       </view>
-    </view>
-    <view class="repayment-to-confirm" wx:if="{{blInfo.status==='CREATED'}}">
-      <view>
-        <text>待确认还款</text>
-        <button wx:if="{{blInfo.viewer==='debtor'}}" bindtap="toggleRepayModal" size="mini">
-          还款
-        </button>
+      <view wx:for="{{moneyChanges.todo}}" wx:key="index" style="padding: 0 40rpx" slot="list">
+        <repay-item item="{{item}}" viewer="{{blInfo.viewer}}" 
+          bind:confirm="repayConfirm" bind:close="repayClose" />
       </view>
-      <view wx:if="{{moneyChanges.todo}}">
-        <view wx:for="{{moneyChanges.todo}}" wx:key="index">
-          {{item.date}} {{item.event}} {{item.changeMoney}} {{item.principal}} {{item.interest}}
-          <button wx:if="{{blInfo.viewer==='loaner'}}" data-id="{{item.id}}" bindtap="repayConfirm">
-            确认
-          </button>
-          <button wx:if="{{blInfo.viewer==='debtor'}}" data-id="{{item.id}}" bindtap="repayClose">
-            关闭
-          </button>
-        </view>
-      </view>
-    </view>
+    </section>
+
     <view class="ic-modal-container" wx:if="{{repayModal}}">
       <form bindsubmit="repay" class="repay-modal-form">
         <view class="record-form-item">
@@ -90,8 +45,10 @@
             <text class="form-input-unit">元</text>
           </view>
         </view>
-        <button bindtap="toggleRepayModal">取消</button>
-        <button form-type="submit">提交</button>
+        <view class="button-area">
+          <button bindtap="toggleRepayModal" size="mini">取消</button>
+          <button form-type="submit" size="mini" type="primary">提交</button>
+        </view>
       </form>
     </view>
   </view>

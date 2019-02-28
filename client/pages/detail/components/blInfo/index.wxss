@@ -1,0 +1,10 @@
+/*--------借贷单详情 start-------*/
+.detail-content{
+  display: block;
+  padding: 20rpx 40rpx;
+}
+
+.detail-item{
+  display: flex;
+}
+/*--------借贷单详情 end---------*/
