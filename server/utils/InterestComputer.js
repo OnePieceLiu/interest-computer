@@ -54,13 +54,11 @@ class InterestComputer {
   }
 
   async deleteBeforeCompute() {
-    // 第一条还款记录后面的 状态为 DONE的记录都要重新计算, 未确认的保留让他继续确认
-    if (this.repaymentRecords[0]) {
-      return await this.conn.execute(
-        `DELETE FROM money_change_record WHERE blid=? AND date>? AND status=?`,
-        [this.blid, this.repaymentRecords[0].date.format('YYYY-MM-DD'), 'DONE']
-      )
-    }
+    // 计算前，changeOrder 大于 lastRecord.changeOrder的都需要清理重新计算
+    return await this.conn.execute(
+      `DELETE FROM money_change_record WHERE blid=? AND changeOrder>?`,
+      [this.blid, this.changeOrder]
+    )
   }
 
   async compute() {
@@ -143,7 +141,9 @@ class InterestComputer {
       this.interest += changeInterest;
     }
 
-    record.id ? await this.updateRepayRecord(record.id) : await this.insertMoneyChange();
+    console.log('record.id', record.id)
+
+    await this.insertMoneyChange();
     if (this.payoff) await this.updateBlInfo()
     return
   }
@@ -181,17 +181,6 @@ class InterestComputer {
       `INSERT INTO money_change_record (blid, status, changeOrder, date, event, changeMoney, principal, interest) 
       VALUES(?, ?, ?, ?, ?, ?, ?, ?);`,
       [blid, status, ++this.changeOrder, changeDate.format('YYYY-MM-DD'), event, changeMoney, principal, interest]
-    )
-
-    return result;
-  }
-
-  async updateRepayRecord(id) {
-    const { status, principal, interest } = this;
-
-    const result = await this.conn.execute(
-      `UPDATE money_change_record SET status=?, changeOrder=?, principal=?, interest=? WHERE id=?`,
-      [status, ++this.changeOrder, principal, interest, id]
     )
 
     return result;

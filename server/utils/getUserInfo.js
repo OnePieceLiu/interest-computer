@@ -1,4 +1,4 @@
-const { pool } = require('../utils/mysql')
+const { pool } = require('./mysql')
 const _ = require('lodash')
 
 // row with loaner and debtor
@@ -13,7 +13,7 @@ async function getUsers(rows, conn = pool) {
 
   openids = [...new Set(openids)].filter(a => a !== null).map(e => "'" + e + "'").join(',')
 
-  // ? => values, 有问题，binlog也不知道查看，先用模版字符串拼接
+  // ? => values, 有问题，binlog也不知道查看，先用模版字符串拼接, 这些openids都是数据库里查出来，来自微信的，应该不会有安全问题
   const [users] = await conn.execute(`SELECT * FROM wx_user WHERE openid in (${openids})`)
 
   return users

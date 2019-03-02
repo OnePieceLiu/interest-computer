@@ -5,14 +5,16 @@ const fs = require('fs')
 const path = require('path')
 const error = require('./middlewares/error')
 const session = require('./middlewares/session')
-const params = require('./middlewares/params')
+const canPost = require('./middlewares/canPost')
+// const params = require('./middlewares/params')
 const pagination = require('./middlewares/pagination')
 const app = new Koa()
 
 // 中间件
 app.use(error)
 app.use(session)
-app.use(params)
+app.use(canPost)
+// app.use(params)
 app.use(pagination)
 app.use(bodyParser())
 

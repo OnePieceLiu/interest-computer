@@ -1,6 +1,6 @@
 const { request } = require('../../utils/pify.js')
 const { blStatus, getEnumName } = require("../../utils/enums.js")
-const app=getApp()
+const app = getApp();
 
 Page({
 
