@@ -1,12 +1,13 @@
 const moment = require('moment')
 const { pool } = require('../utils/mysql')
+const { cycle2char } = require('../utils/enums')
 
 module.exports = async (ctx, next) => {
   const { query, openid } = ctx
 
   const conn = await pool.getConnection()
   const [[row]] = await conn.execute(`SELECT * FROM borrow_loan_record where id=?`, [query.id])
-  const { id, loanDate, cycle, cycleUnit, loanAmount, rate, afterCycle, repaymentType, loaner, debtor, sponsor, status } = row
+  const { id, loanDate, cycle, cycleUnit, loanAmount, rate, principal, interest, afterCycle, repaymentType, loaner, debtor, sponsor, status } = row
   const loanerP = loaner ? conn.execute(`SELECT nickName, avatarUrl from wx_user where openid=?`, [loaner]) : Promise.resolve([[]])
   const debtorP = debtor ? conn.execute(`SELECT nickName, avatarUrl from wx_user where openid=?`, [debtor]) : Promise.resolve([[]])
   const [[[loanerInfo]], [[debtorInfo]]] = await Promise.all([loanerP, debtorP])
@@ -23,6 +24,9 @@ module.exports = async (ctx, next) => {
     throw new Error('无权限查看!')
   }
 
+  const today = moment().format('YYYY-MM-DD')
+  const repaymentDate = moment(loanDate).add(cycle, cycle2char[cycleUnit]).format('YYYY-MM-DD')
+
   ctx.body = {
     code: 0,
     data: {
@@ -30,8 +34,11 @@ module.exports = async (ctx, next) => {
       loanDate: moment(loanDate).format('YYYY-MM-DD'),
       cycle,
       cycleUnit,
+      repaymentDate,
+      overdue: today > repaymentDate && status === 'CREATED',
       loanAmount,
       rate,
+      totalAmount: (Number(principal) + Number(interest)).toFixed(2),
       afterCycle,
       repaymentType,
       sponsor,

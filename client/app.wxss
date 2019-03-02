@@ -1,25 +1,4 @@
 /**app.wxss**/
-
-/** 顶部tab样式start **/
-.ic-tab{
-  height: 30px;
-  display: flex;
-}
-
-.ic-tab-item{
-  flex: auto;
-  text-align: center;
-  line-height: 30px;
-  width: 50%;
-}
-
-.tab-item-selected{
-  color: #1AAD16;
-  box-sizing: border-box;
-  border-bottom: 2px solid #1AAD16;
-}
-/** 顶部tab样式end **/
-
 .bb1pxe5{
   border-bottom: 1px solid #e5e5e5;
 }
@@ -30,14 +9,4 @@
 
 .bgcf0{
   background-color: #f0f0f0;
-}
-
-/** modal container 样式 **/
-.ic-modal-container{
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0,0,0,0.3);
 }

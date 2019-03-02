@@ -6,7 +6,8 @@
       <view class="record-form-item-title">借贷日期：</view>
       <view class="record-form-item-input bb1pxe5">
         <picker mode="date" 
-          value="{{values.date}}" 
+          end="{{today}}"
+          value="{{values.date}}"
           bindchange="bindLoanDateChange">
           <view>{{values.loanDate}}</view>
         </picker>
@@ -68,7 +69,10 @@
     </view>
 
     <view class="record-form-item">
-      <view class="record-form-item-title">周期结束：</view>
+      <view class="record-form-item-title">
+        <view>周期结束：</view>
+        <view bindtap="toggleCycleEndTips" class="tips-icon">?</view>
+      </view>
       <radio-group class="record-form-item-radio" bindchange="bindAfterCycleChange">
         <label class="form-input-radio" wx:for="{{afterCycles}}" wx:key="index">
           <radio value="{{item.value}}" checked="{{item.value === values.afterCycle}}" />
@@ -78,7 +82,10 @@
     </view>
 
     <view class="record-form-item">
-      <view class="record-form-item-title">还款方式：</view>
+      <view class="record-form-item-title">
+        <view>提前还款：</view>
+        <view bindtap="toggleRepaymentTypeTips" class='tips-icon'>?</view>
+      </view>
       <radio-group class="record-form-item-radio" bindchange="bindRepaymentTypeChange">
         <label class="form-input-radio" wx:for="{{repaymentTypes}}" wx:key="index">
           <radio value="{{item.value}}" checked="{{item.value === values.repaymentType}}" />
@@ -88,7 +95,30 @@
     </view>
 
     <view class="btn-area">
-      <button form-type="submit">提交</button>
+      <button form-type="submit" type="primary">提交</button>
     </view>
   </form>
+
+  <modal wx:if="{{mv.afterCycle}}">
+    <view class="example">例如，到了还款日期，剩余应还本金10000，应还利息500。</view>
+    <view class="options-explain">
+      <view class="opt">1、利息转本金：那么自动以相同利率进入下一个周期，本金10500，利息从0累加。</view>
+      <view class="opt">2、剩余本金生息：那么自动以相同利率进入下一个周期，本金仍是10000，利息从500累加。</view>
+      <view class="opt">
+        3、默认还清：那么自动生成一笔10500的还款单。如果没有还清，或者需要更换利率。可以重新发起一笔借贷记录。
+      </view>
+    </view>
+    <button type="primary" bindtap="toggleCycleEndTips">确定</button>
+  </modal>
+
+  <modal wx:if="{{mv.repaymentType}}">
+    <view class="example">例如，当前应还本金9000，应还利息1000，提前还款5000。</view>
+    <view class="options-explain">
+      <view class="opt">1、先本后息：那么还掉5000本金。</view>
+      <view class="opt">2、等比本息：那么还掉本金4500，还掉利息500。</view>
+      <view class="opt">3、先息后本：那么还掉利息1000，还掉本金4000。</view>
+    </view>
+    <view class="important-info">本金会按天产生利息，利息不会</view>
+    <button type="primary" bindtap="toggleRepaymentTypeTips">确定</button>
+  </modal>
 </global>

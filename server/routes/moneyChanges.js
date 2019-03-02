@@ -29,8 +29,6 @@ module.exports = async (ctx, next) => {
 }
 
 function formatObj(e) {
-  console.log(e.changeMoney, e.principal, e.interest)
-
   e.changeMoney = nFormatter(e.changeMoney, { withSign: true })
   e.total = nFormatter(Number(e.principal) + Number(e.interest))
   e.principal = nFormatter(e.principal)

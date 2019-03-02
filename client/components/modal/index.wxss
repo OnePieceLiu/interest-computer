@@ -1,0 +1,23 @@
+/** modal 样式 start **/
+.ic-modal-container{
+  position: fixed;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0,0,0,0.3);
+}
+
+.ic-modal-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 95%;
+  box-sizing: border-box;
+  background-color: #fff;
+  border-radius: 4px;
+  padding: 40rpx 60rpx;
+}
+/** modal 样式 end **/

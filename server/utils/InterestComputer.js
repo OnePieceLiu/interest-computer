@@ -71,9 +71,6 @@ class InterestComputer {
     await this.deleteBeforeCompute()
 
     const now = moment(); //now 包含时分秒，同一天 也会为true。
-    console.log('start', this.cycleStartDate.format('YYYY-MM-DD HH:mm:ss'))
-    console.log('end', this.cycleEndDate.format('YYYY-MM-DD HH:mm:ss'))
-    console.log('now', now.format('YYYY-MM-DD HH:mm:ss'))
 
     while (this.cycleEndDate.isBefore(now)) {
       await this.loopRepay(this.cycleEndDate)

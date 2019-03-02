@@ -1,0 +1,14 @@
+<!--components/select/index.wxml-->
+<view bindtap="toggleExpand" class="select-container" bindblur="onBlur">
+  <view>
+    {{valueName}}
+    <view class="{{'icon-down ' + (expand && 'overturn')}}"></view>
+  </view>
+  <view wx:if="{{expand}}" class="options-container">
+    <view wx:for="{{options}}" wx:key="item.value" 
+      data-value="{{item.value}}" bindtap="onChange"
+      class="{{ value === item.value && 'selected' }}">
+      {{item.name}}
+    </view>
+  </view>
+</view>

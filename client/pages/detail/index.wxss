@@ -5,17 +5,6 @@
 }
 
 /*----------还款单modal start-------------*/
-.repay-modal-form{
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 95%;
-  box-sizing: border-box;
-  background-color: #fff;
-  border-radius: 4px;
-  padding: 40rpx 60rpx;
-}
 .record-form-item {
   display: flex;
   justify-content: space-between;
@@ -37,7 +26,10 @@
 .form-input-unit{
   position: absolute;
   top: 0;
-  right: 10rpx;
+  right: 0;
+  width: 60rpx;
+  box-sizing: border-box;
+  padding-right: 10rpx;
 }
 .button-area{
   display: flex;

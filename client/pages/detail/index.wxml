@@ -28,8 +28,8 @@
       </view>
     </section>
 
-    <view class="ic-modal-container" wx:if="{{repayModal}}">
-      <form bindsubmit="repay" class="repay-modal-form">
+    <modal wx:if="{{repayModal}}">
+      <form bindsubmit="repay">
         <view class="record-form-item">
           <view class="record-form-item-title">还款日期：</view>
           <view class="record-form-item-input bb1pxe5">
@@ -50,7 +50,7 @@
           <button form-type="submit" size="mini" type="primary">提交</button>
         </view>
       </form>
-    </view>
+    </modal>
   </view>
   <view style="padding: 100rpx; text-align: center;" wx:else>{{errMsg}}</view>
 </global>

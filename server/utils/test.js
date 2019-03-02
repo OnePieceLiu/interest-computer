@@ -24,9 +24,13 @@
 
 // console.log(a, b, c)
 
-var format = require('format-number');
-var formattedNumber1 = format({ prefix: '+' })(-2368932);
-var formattedNumber2 = format()(-2368932);
+// const _ = require('lodash')
 
-console.log(formattedNumber1)
-console.log(formattedNumber2)
+// var a = { a: 1, b: 2, c: 3 }
+
+// console.log(_.at(a, ['a', 'c']))
+
+const { nFormatter } = require('./nFormatter')
+
+const a = nFormatter(Number('0.00') + Number('0.00'))
+console.log(a)

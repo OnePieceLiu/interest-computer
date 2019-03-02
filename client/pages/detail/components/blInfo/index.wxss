@@ -2,9 +2,40 @@
 .detail-content{
   display: block;
   padding: 20rpx 40rpx;
+  position: relative;
 }
 
 .detail-item{
   display: flex;
+}
+
+.ib{
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.overdue{
+  font-size:12px;
+  line-height:14px;
+  width:14px;
+  border:1px solid #ff4400;
+  color:#ff4400;
+  border-radius:50%;
+  text-align:center;  
+}
+
+.status{
+  position:absolute;
+  top:5px;
+  right:50px;
+  border-radius:50%;
+  border:1px solid #1AAD16;
+  color:#1AAD16;
+  transform:rotate(-30deg);
+  width:50px;
+  height:50px;
+  text-align:center;
+  line-height:50px;
+  opacity:0.5;
 }
 /*--------借贷单详情 end---------*/

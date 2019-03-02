@@ -1,0 +1,5 @@
+<view class='ic-modal-container'>
+  <view class="ic-modal-content">
+    <slot></slot>
+  </view>
+</view>

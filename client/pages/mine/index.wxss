@@ -1,0 +1,30 @@
+/** 顶部tab样式start **/
+.ic-tab{
+  height: 40px;
+  display: flex;
+}
+
+.ic-tab-item{
+  flex: none;
+  text-align: center;
+  line-height: 40px;
+  width: 33%;
+}
+
+.tab-item-selected{
+  color: #fff;
+  box-sizing: border-box;
+  background-color: #1AAD16;
+}
+
+.ic-tab-else{
+  height: calc(100% - 40px);
+  overflow: auto;
+}
+
+.select{
+  line-height: 40px;
+  width: 34%;
+  text-align: center;
+}
+/** 顶部tab样式end **/

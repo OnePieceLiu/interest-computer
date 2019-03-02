@@ -1,18 +1,18 @@
-// pages/detail/components/participant/index.js
+// pages/mine/blItem/index.js
 Component({
   /**
    * 组件的属性列表
    */
   properties: {
-    debtorInfo: Object,
-    loanerInfo: Object
+    item: Object,
+    type: String
   },
 
   /**
    * 组件的初始数据
    */
   data: {
-    defaultAvatar: '/images/profile.jpeg',
+
   },
 
   /**

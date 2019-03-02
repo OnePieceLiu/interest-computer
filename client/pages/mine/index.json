@@ -1,4 +1,7 @@
 {
   "navigationBarTitleText": "我的",
-  "usingComponents": {}
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "bl-info": "./blItem/index"
+  }
 }

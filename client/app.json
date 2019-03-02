@@ -1,16 +1,13 @@
 {
   "pages": [
-    "pages/index/index",
     "pages/record/index",
-    "pages/detail/index",
     "pages/mine/index",
+    "pages/index/index",
+    "pages/detail/index",
     "pages/test/index"
   ],
   "window": {
-    "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#fff",
-    "navigationBarTitleText": "计息助手",
-    "navigationBarTextStyle": "black"
+    "navigationBarTitleText": "计息助手"
   },
   "tabBar": {
     "selectedColor": "#1AAD16",
@@ -31,6 +28,8 @@
     ]
   },
   "usingComponents": {
-    "global": "components/global/index"
+    "global": "components/global/index",
+    "modal": "components/modal/index",
+    "select": "components/select/index"
   }
 }

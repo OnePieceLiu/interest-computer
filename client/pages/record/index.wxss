@@ -15,6 +15,19 @@
   flex: none;
 }
 
+.tips-icon{
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+  border: 1px solid #e5e5e5;
+  line-height: 30px;
+  font-size: 30px;
+  margin-top: 5px;
+  margin-left: 20%;
+  text-align: center;
+}
+
+
 .record-form-item-input{
   flex: auto;
   position: relative;
@@ -33,7 +46,10 @@
 .form-input-unit{
   position: absolute;
   top: 0;
-  right: 10rpx;
+  right: 0;
+  width: 60rpx;
+  box-sizing: border-box;
+  padding-right: 10rpx;
 }
 .form-input-unit-picker{
   color: #1AAD16;
@@ -41,4 +57,23 @@
 
 .form-input-radio{
   display: block;
+}
+
+.example{
+  margin: 5px auto;
+}
+
+.options-explain{
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.opt{
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.important-info{
+  color: #1AAD16;
+  margin-bottom: 10px;
 }

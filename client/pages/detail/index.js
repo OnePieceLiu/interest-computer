@@ -1,5 +1,5 @@
 const { request } = require('../../utils/pify')
-const { cycleUnits, afterCycles, repaymentTypes, getEnumName } = require('../../utils/enums')
+const { cycleUnits, afterCycles, repaymentTypes, blStatus, getEnumName } = require('../../utils/enums')
 const app = getApp()
 const today = (new Date()).format()
 
@@ -17,12 +17,11 @@ Page({
       todo: []
     },
     blInfo: {},
-    defaultAvatar: '../../images/profile.jpeg',
 
     today: today,
     values: {
       date: today,
-      amount: 0
+      amount: undefined
     }
   },
 
@@ -32,7 +31,6 @@ Page({
    */
   onLoad: function (options) {
     const { id = 29 } = options
-    console.log('id', id)
     this.setData({ id }, () => this.getBlInfo())
   },
 
@@ -45,9 +43,9 @@ Page({
         blInfo.cycleUnit = getEnumName(cycleUnits, blInfo.cycleUnit)
         blInfo.afterCycle = getEnumName(afterCycles, blInfo.afterCycle)
         blInfo.repaymentType = getEnumName(repaymentTypes, blInfo.repaymentType)
+        blInfo.statusZh = getEnumName(blStatus, blInfo.status)
 
         this.setData({ blInfo }, () => this.getMoneyChanges())
-
       }, ({ errMsg }) => {
         this.setData({ errMsg })
       })
@@ -106,7 +104,7 @@ Page({
     const { date, amount } = this.data.values;
 
     if (amount <= 0) {
-      console.error('wrong amount!')
+      app.icError('还款金额必须大于0')
       return
     }
 
@@ -117,11 +115,11 @@ Page({
     }).then(() => {
       this.getMoneyChanges()
       this.toggleRepayModal()
-    })
+    }).catch(err => app.icError(err.errMsg))
   },
 
-  repayClose: function (e){
-    const {id} = e.detail
+  repayClose: function (e) {
+    const { id } = e.detail
     request({
       url: '/repayClose',
       data: { id },
@@ -130,7 +128,7 @@ Page({
   },
 
   repayConfirm: function (e) {
-    const {id} = e.detail
+    const { id } = e.detail
     return request({
       url: '/repayConfirm',
       data: { id },
@@ -160,7 +158,18 @@ Page({
       }
     }
 
-    return { title }
+    return { 
+      title,
+      success: function(e){
+        console.log('abc', e)
+        wx.redirectTo({
+          url: '/pages/index/index'
+        })
+      },
+      fail: function(e){
+        app.icInfo('分享失败，请检查网络！')
+      }
+    }
   }
 })
 

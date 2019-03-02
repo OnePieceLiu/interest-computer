@@ -1,6 +1,7 @@
 const { request } = require('../../utils/pify')
 const { cycleUnits, afterCycles, repaymentTypes } = require('../../utils/enums')
 const app = getApp();
+const today = (new Date()).format()
 
 Page({
 
@@ -9,30 +10,36 @@ Page({
    */
   data: {
     type: '',
-
+    today,
     cycleUnits,
     afterCycles,
     repaymentTypes,
-    values: {
-      loanDate: (new Date()).format(),
-      cycle: 0,
-      cycleUnit: 0,
-      repaymentDate: (new Date()).format(),
 
-      loanAmount: 0,
-      rate: 0,
-      repaymentAmount: 0,
+    values: {
+      loanDate: today,
+      cycle: undefined,
+      cycleUnit: 0,
+      repaymentDate: today,
+
+      loanAmount: undefined,
+      rate: undefined,
+      repaymentAmount: undefined,
 
       afterCycle: 'compound',
       repaymentType: 'interestFirst'
     },
+
+    mv:{
+      afterCycle: false,
+      repaymentType: false
+    }
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    this.setData({ type: options.type })
+    this.setData({ type: options.type || 'borrow' })
     wx.setNavigationBarTitle({
       title: options.type === 'loan' ? '记录借出' : '记录借入'
     })
@@ -55,9 +62,18 @@ Page({
 
     const sponsor = this.data.type === 'loan' ? 'loaner' : 'debtor';
 
-    if (!loanDate || !cycle || typeof cycleUnit === 'undefined' || !loanAmount
-      || !rate || !afterCycle || !repaymentType) {
-      app.icError('填写不合格，请检查表单输入！')
+    if(!cycle){
+      app.icError('请填写1～100的借贷周期，可以切换单位！')
+      return
+    }
+
+    if(!loanAmount){
+      app.icError('请填写>0的借贷金额，最多两位小数！')
+      return
+    }
+
+    if (!rate){
+      app.icError('请填写利率，最多两位小数！')
       return
     }
 
@@ -72,7 +88,21 @@ Page({
         url: `../detail/index?id=${id}`,
       })
     }).catch(err=>app.icError(err.errMsg))
-  }
+  },
+
+  toggleCycleEndTips(){
+    const {afterCycle} = this.data.mv;
+    this.setData({
+      'mv.afterCycle': !afterCycle
+    })
+  },
+
+  toggleRepaymentTypeTips() {
+    const { repaymentType } = this.data.mv;
+    this.setData({
+      'mv.repaymentType': !repaymentType
+    })
+  },
 })
 
 
@@ -93,8 +123,6 @@ function syncFieldToData(fieldName, callback) {
 
 function computeRepaymentDate() {
   const { loanDate, cycle, cycleUnit } = this.data.values
-  console.log('cycle', cycle, typeof cycle)
-  console.log('cycleUnit', cycleUnit, typeof cycleUnit)
 
   if (loanDate && cycle) {
     let repaymentDate = new Date(loanDate)

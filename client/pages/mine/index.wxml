@@ -6,18 +6,18 @@
     <view data-type="loan" bindtap="selectTab" class="{{'ic-tab-item ' + (type==='loan' && 'tab-item-selected')}}">
       借出
     </view>
+    <view class="select">
+      <select value="{{status}}" options="{{statusOpts}}" bind:change="changeStatus" />
+    </view>
   </view>
-  <view wx:for="{{type==='borrow'? borrowList.data : loanList.data }}" wx:key="index" style="margin: 15px 5px;">
-    <navigator url="{{'../detail/index?id='+ item.id }}">
-      <text>借款利率: {{item.rate}}</text>
-      <text>应还本金: {{item.principal}}</text>
-      <text>应还利息: {{item.interest}}</text>
-      <text>借款日期: {{item.loanDate}}</text>
-      <text>借款周期: {{item.cycle}} {{item.cycleUnit}}</text>
-      <text>{{item.statusZh}}</text>
-    </navigator>
-  </view>
-  <view wx:if="{{type==='borrow'? borrowList.end : loanList.end}}" style="text-align:center; color: #999;">
-    --没有更多数据了！--
+  <view class="ic-tab-else">
+    <view wx:for="{{list.data }}" wx:key="item.id" 
+      style="padding: 8px 15px;border-bottom: 1px solid #e8e8e8;">
+      <bl-info item="{{item}}" type="{{type}}" />
+    </view>
+    <view wx:if="{{list.end}}" 
+      style="text-align:center; color: #999; margin-top: 15px;">
+      --没有更多数据了！--
+    </view>
   </view>
 </global>
