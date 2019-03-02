@@ -3,9 +3,7 @@
 // 查询对应的还款记录，保存下来。
 // 计算从起始点至今的 变动记录，再依次插入数据库。把最后一条 money_change_record 的本金利息同步到 borrow_loan_record。
 
-const { pool } = require('./mysql')
 const moment = require('moment')
-const { cycle2char } = require('./enums')
 
 class InterestComputer {
   // repaymentRecords 的 date应该是按时间正序排列好的
@@ -28,7 +26,6 @@ class InterestComputer {
     this.loanDate = moment(blInfo.loanDate);
     this.cycle = blInfo.cycle;
     this.cycleUnit = blInfo.cycleUnit;
-    this.momentUnit = cycle2char[blInfo.cycleUnit];
     this.loanAmount = Number(blInfo.loanAmount);    //DEC存储的是字符串
     this.rate = Number(blInfo.rate);
     this.afterCycle = blInfo.afterCycle;
@@ -48,11 +45,11 @@ class InterestComputer {
 
   // 计算出一个包含 changeDate的周期。 cycleStartDate <= changeDate < cycleEndDate
   computePeriod() {
-    const cycleNumber = this.changeDate.diff(this.loanDate, this.momentUnit)
+    const cycleNumber = this.changeDate.diff(this.loanDate, this.cycleUnit)
 
     // moment().add方法是修改moment对象，所以需要新创建 moment对象再add
-    this.cycleStartDate = moment(this.loanDate).add(cycleNumber * this.cycle, this.momentUnit)
-    this.cycleEndDate = moment(this.cycleStartDate).add(this.cycle, this.momentUnit)
+    this.cycleStartDate = moment(this.loanDate).add(cycleNumber * this.cycle, this.cycleUnit)
+    this.cycleEndDate = moment(this.cycleStartDate).add(this.cycle, this.cycleUnit)
     this.periodDays = this.cycleEndDate.diff(this.cycleStartDate, 'd')
   }
 

@@ -2,6 +2,7 @@
 .ic-tab{
   height: 40px;
   display: flex;
+  box-shadow:0 0 5px #ccc;
 }
 
 .ic-tab-item{

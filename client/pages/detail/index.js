@@ -177,9 +177,10 @@ Page({
 
 function syncFieldToData(fieldName, callback) {
   const numberFields = ["amount"]
-
+  
   return function (e) {
     let value = e.detail.value;
+    if (value === '') return;
     // 字符串转化为数字，同时最多保留两位小数
     numberFields.some(a => a === fieldName) && (value = parseInt(value * 100) / 100)
 

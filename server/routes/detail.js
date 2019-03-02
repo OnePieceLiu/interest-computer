@@ -1,6 +1,5 @@
 const moment = require('moment')
 const { pool } = require('../utils/mysql')
-const { cycle2char } = require('../utils/enums')
 
 module.exports = async (ctx, next) => {
   const { query, openid } = ctx
@@ -25,7 +24,7 @@ module.exports = async (ctx, next) => {
   }
 
   const today = moment().format('YYYY-MM-DD')
-  const repaymentDate = moment(loanDate).add(cycle, cycle2char[cycleUnit]).format('YYYY-MM-DD')
+  const repaymentDate = moment(loanDate).add(cycle, cycleUnit).format('YYYY-MM-DD')
 
   ctx.body = {
     code: 0,

@@ -1,14 +1,11 @@
 const { pool } = require('../utils/mysql')
 const moment = require('moment')
-const { cycle2char } = require('../utils/enums')
 const { nFormatter } = require('../utils/nFormatter')
 const { getUsers, getUserById } = require('../utils/getUserInfo')
 
 module.exports = async (ctx, next) => {
   const { openid, query, path, pageTS } = ctx
   const { type, status, offset, limit } = query
-
-  console.log(pageTS, path);
 
   const conn = await pool.getConnection()
 
@@ -25,8 +22,8 @@ module.exports = async (ctx, next) => {
     code: 0, data: rows.map(e => {
       const { id, loanDate, cycle, cycleUnit, principal, interest, status, loaner, debtor, sponsor } = e;
       const today = moment().format('YYYY-MM-DD')
-      const repaymentDate = moment(loanDate).add(cycle, cycle2char[cycleUnit]).format('YYYY-MM-DD')
-      const targetId = sponsor === 'loaner' ? debtor : loaner;
+      const repaymentDate = moment(loanDate).add(cycle, cycleUnit).format('YYYY-MM-DD')
+      const targetId = type === 'borrow' ? loaner : debtor;
 
       const blInfo = {
         id,

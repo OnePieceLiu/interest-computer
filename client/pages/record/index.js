@@ -18,7 +18,7 @@ Page({
     values: {
       loanDate: today,
       cycle: undefined,
-      cycleUnit: 0,
+      cycleUnit: 'y',
       repaymentDate: today,
 
       loanAmount: undefined,
@@ -29,7 +29,7 @@ Page({
       repaymentType: 'interestFirst'
     },
 
-    mv:{
+    mv: {
       afterCycle: false,
       repaymentType: false
     }
@@ -62,17 +62,17 @@ Page({
 
     const sponsor = this.data.type === 'loan' ? 'loaner' : 'debtor';
 
-    if(!cycle){
+    if (!cycle) {
       app.icError('请填写1～100的借贷周期，可以切换单位！')
       return
     }
 
-    if(!loanAmount){
+    if (!loanAmount) {
       app.icError('请填写>0的借贷金额，最多两位小数！')
       return
     }
 
-    if (!rate){
+    if (!rate) {
       app.icError('请填写利率，最多两位小数！')
       return
     }
@@ -87,11 +87,11 @@ Page({
       wx.navigateTo({
         url: `../detail/index?id=${id}`,
       })
-    }).catch(err=>app.icError(err.errMsg))
+    }).catch(err => app.icError(err.errMsg))
   },
 
-  toggleCycleEndTips(){
-    const {afterCycle} = this.data.mv;
+  toggleCycleEndTips() {
+    const { afterCycle } = this.data.mv;
     this.setData({
       'mv.afterCycle': !afterCycle
     })
@@ -107,10 +107,12 @@ Page({
 
 
 function syncFieldToData(fieldName, callback) {
-  const numberFields = ["cycle", "cycleUnit", "loanAmount", "rate"]
+  const numberFields = ["cycle", "loanAmount", "rate"]
 
   return function (e) {
     let value = e.detail.value;
+    if (value === '') return;
+
     // 字符串转化为数字，同时最多保留两位小数
     numberFields.some(a => a === fieldName) && (value = parseInt(value * 100) / 100)
     if (fieldName === 'cycle' && value > 100) value = 100;
@@ -127,10 +129,10 @@ function computeRepaymentDate() {
   if (loanDate && cycle) {
     let repaymentDate = new Date(loanDate)
     switch (cycleUnit) {
-      case 0: repaymentDate.addYears(cycle); break;
-      case 1: repaymentDate.addMonths(cycle); break;
-      case 2: repaymentDate.addWeeks(cycle); break;
-      case 3: repaymentDate.addDays(cycle); break;
+      case 'y': repaymentDate.addYears(cycle); break;
+      case 'M': repaymentDate.addMonths(cycle); break;
+      case 'w': repaymentDate.addWeeks(cycle); break;
+      case 'd': repaymentDate.addDays(cycle); break;
       default: break;
     }
 

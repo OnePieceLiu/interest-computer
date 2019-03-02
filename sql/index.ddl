@@ -22,7 +22,7 @@ CREATE TABLE borrow_loan_record (
 id INT PRIMARY KEY AUTO_INCREMENT,
 loanDate DATE,
 cycle TINYINT,
-cycleUnit TINYINT,
+cycleUnit CHAR(1),
 loanAmount DEC(14, 2),
 rate DEC(6, 2),
 principal DEC(14,2),

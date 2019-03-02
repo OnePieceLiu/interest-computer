@@ -1,6 +1,5 @@
 const moment = require('moment')
 const { pool } = require('../utils/mysql')
-const { cycle2char } = require('../utils/enums')
 const { IC } = require('../utils/InterestComputer')
 
 module.exports = async (ctx, next) => {
@@ -38,7 +37,7 @@ module.exports = async (ctx, next) => {
         interest: 0
       }
 
-      const cycleEndDate = moment(loanDate).add(cycle, cycle2char[cycleUnit])
+      const cycleEndDate = moment(loanDate).add(cycle, cycleUnit)
       const startOfToday = moment().startOf('day');
       const repaymentRecords = []
       if (afterCycle === 'payoff' && !cycleEndDate.isAfter(startOfToday)) {
