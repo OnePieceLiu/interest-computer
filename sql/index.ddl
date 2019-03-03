@@ -38,7 +38,7 @@ KEY(id)
 );
 
 
-// events [借钱、还钱、利息转本金、周期结息、按天生息、还款前结息]
+// events [借钱、还钱、周期结息转本金、周期结息、按天生息、还款前结息]
 // status [WAIT_CONFIRM, DONE, CLOSED]
 CREATE TABLE money_change_record (
 id INT AUTO_INCREMENT,
@@ -55,3 +55,11 @@ PRIMARY KEY(id),
 KEY(id),
 KEY(blid)
 );
+
+CREATE TABLE user_todo_count(
+  openid CHAR(64) PRIMARY KEY,
+  date DATE,
+  shouldReceive DEC(14,2),
+  shouldRepay DEC(14,2)
+  KEY(openid)
+)

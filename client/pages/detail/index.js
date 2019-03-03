@@ -115,7 +115,7 @@ Page({
     }).then(() => {
       this.getMoneyChanges()
       this.toggleRepayModal()
-    }).catch(err => app.icError(err.errMsg))
+    })
   },
 
   repayClose: function (e) {

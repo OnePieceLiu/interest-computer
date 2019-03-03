@@ -1,0 +1,12 @@
+(select loaner, sum(principal)+sum(interest) as shouldRecieve from borrow_loan_record WHERE status='CREATED' group by loaner)
+full join
+(select debtor,  sum(principal)+sum(interest) as shouldRepay from borrow_loan_record WHERE status='CREATED' group by debtor)
+where loaner = debtor;
+
+select a.openid, shouldRecieve, b.openid, b.shouldRepay from (
+  select loaner, sum(principal)+sum(interest) as shouldRecieve from borrow_loan_record WHERE status='CREATED' group by loaner
+) a 
+full join (
+  select debtor,  sum(principal)+sum(interest) as shouldRepay from borrow_loan_record WHERE status='CREATED' group by debtor
+) b 
+where a.openid = b.openid;

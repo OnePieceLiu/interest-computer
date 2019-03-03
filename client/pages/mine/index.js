@@ -53,7 +53,7 @@ Page({
           data: oldData.concat(list)
         }
       })
-    }).catch(err => app.icError(err.errMsg))
+    })
   },
 
   selectTab(e) {

@@ -40,7 +40,6 @@ class InterestComputer {
     this.principal = Number(lastRecord.principal);
     this.interest = Number(lastRecord.interest);
 
-    this.computePeriod()
   }
 
   // 计算出一个包含 changeDate的周期。 cycleStartDate <= changeDate < cycleEndDate
@@ -62,7 +61,7 @@ class InterestComputer {
   }
 
   async compute() {
-
+    this.computePeriod()
     await this.deleteBeforeCompute()
 
     const now = moment(); //now 包含时分秒，同一天 也会为true。
@@ -152,8 +151,9 @@ class InterestComputer {
     this.changeMoney = this.computeInterest(this.cycleEndDate);
     this.changeDate = this.cycleEndDate
     if (this.afterCycle === 'compound') {
-      this.event = '利息转本金'
-      this.principal += this.changeMoney;
+      this.event = '周期结息转本金'
+      this.principal += this.changeMoney + this.interest;
+      this.interest = 0;
     } else {
       this.event = '周期结息';
       this.interest += this.changeMoney;

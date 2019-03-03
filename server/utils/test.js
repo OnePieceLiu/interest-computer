@@ -1,5 +1,5 @@
 // const { pool } = require("./mysql")
-// const moment = require('moment')
+const moment = require('moment')
 
 // async function test() {
 //   const [res] = await pool.execute('INSERT INTO test (tdatetime, ttimestamp) VALUES(?,?)',
@@ -18,9 +18,32 @@
 //   console.log(pool.pool._allConnections.length, pool.pool._freeConnections.length)
 // })
 
-// var a = moment()
-// var b = moment(a).startOf('day')
-// var c = moment(a).endOf('day')
+
+const startOfToday = moment().startOf('day')
+
+const loanDate = '2019-02-03'
+const cycle = 1
+const cycleUnit = 'M'
+
+const cycleNumber = startOfToday.diff(moment(loanDate), cycleUnit);
+let cycleEndDate = moment(loanDate).add(cycleNumber * cycle, cycleUnit)
+const isEnd = startOfToday.isSame(cycleEndDate, 'd')
+let cycleStartDate, periodDays;
+if (isEnd) {
+  cycleStartDate = moment(cycleEndDate).add(-1 * cycle, cycleUnit)
+  periodDays = cycleEndDate.diff(cycleStartDate, 'd')
+} else {
+  cycleStartDate = cycleEndDate;
+  cycleEndDate = moment(cycleEndDate).add(1 * cycle, cycleUnit)
+  periodDays = cycleEndDate.diff(cycleStartDate, 'd')
+}
+
+console.log(startOfToday)
+console.log(cycleNumber)
+console.log(isEnd)
+console.log(cycleStartDate)
+console.log(cycleEndDate)
+console.log(periodDays)
 
 // console.log(a, b, c)
 
@@ -30,7 +53,7 @@
 
 // console.log(_.at(a, ['a', 'c']))
 
-const { nFormatter } = require('./nFormatter')
+// const { nFormatter } = require('./nFormatter')
 
-const a = nFormatter(Number('0.00') + Number('0.00'))
-console.log(a)
+// const a = nFormatter(Number('0.00') + Number('0.00'))
+// console.log(a)

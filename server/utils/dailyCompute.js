@@ -1,33 +1,125 @@
 const { redis } = require('./redis.js')
 const { pool } = require('./mysql')
-const { IC } = require('./InterestComputer')
+const moment = require('moment')
 
 async function startCompute() {
-  await redis.set('computing', true, 'EX', 24 * 60 * 60)    //每天都要跑定时任务，这个tag每天都刷新，一直存在
+  await redis.set('computing', 'true', 'EX', 24 * 60 * 60)    //每天都要跑定时任务，这个tag每天都刷新，一直存在
 
   const conn = await pool.getConnection()
   try {
     await conn.beginTransaction()
 
-    const [blInfos] = await conn.execute(`SELECT * FROM borrow_loan_record where status=?`, ['WAIT_CONFIRM'])
+    const startOfToday = moment().startOf('day')
+    const [blInfos] = await conn.execute(`SELECT * FROM borrow_loan_record where status=?`, ['CREATED'])
 
-    for (const i = 0, len = blInfos.length; i < len; i++) {
+
+    for (let i = 0, len = blInfos.length; i < len; i++) {
       const blInfo = blInfos[i];
-      const [mcInfos] = await conn.execute(`SELECT * FROM money_change_record where blid=? order by changeOrder desc limit 2`, [blInfo.id])
+      const { loanDate, cycle, cycleUnit, rate, afterCycle } = blInfo;
 
-      if (mcInfos[0].event === '按天生息') {
-        await IC.create({ lastRecord: mcInfos[1], blInfo, conn })
+      // 获取当前周期的天数，今天是否是周期结束日
+      const cycleNumber = startOfToday.diff(moment(loanDate), cycleUnit);
+      let cycleEndDate = moment(loanDate).add(cycleNumber * cycle, cycleUnit)
+      const isEnd = startOfToday.isSame(cycleEndDate, 'd')
+      let cycleStartDate, periodDays;
+      if (isEnd) {
+        cycleStartDate = moment(cycleEndDate).add(-1 * cycle, cycleUnit)
+        periodDays = cycleEndDate.diff(cycleStartDate, 'd')
       } else {
-        await IC.create({ lastRecord: mcInfos[0], blInfo, conn })
+        cycleStartDate = cycleEndDate;
+        cycleEndDate = moment(cycleEndDate).add(1 * cycle, cycleUnit)
+        periodDays = cycleEndDate.diff(cycleStartDate, 'd')
+      }
+      //----- periodDays, isEnd ----------//
+
+      const [mcInfos] = await conn.execute(`SELECT * FROM money_change_record where blid=? AND status=? order by changeOrder desc limit 2`, [blInfo.id, 'DONE'])
+
+      if (mcInfos[0].event === '按天生息') { // 昨天只发生了生息行为
+
+        // 获取当前周期的天数，mcInfos[1]作为lastRecord, 计算到今天的利息。 根据afterCycle，今天是不是周期末，决定event。 更新 mcInfos[0]
+        let { principal, interest, date } = mcInfos[1]
+        const changeMoney = computeInterest({ principal, rate, periodDays, startDate: date, endDate: startOfToday })
+
+        let event = '按天生息'
+        if (isEnd) {
+          if (afterCycle === 'compound') {
+            event = '周期结息转本金'
+            principal = Number(principal) + Number(changeMoney) + Number(interest);
+            interest = 0;
+          } else {
+            event = '周期结息';
+            interest = Number(interest) + Number(changeMoney);
+          }
+        } else {
+          event = '按天生息';
+          interest = Number(interest) + Number(changeMoney);
+        }
+
+        await conn.execute(
+          `UPDATE money_change_record SET date=?, event=?, changeMoney=?, principal=?, interest=? WHERE id=?`,
+          [startOfToday.format('YYYY-MM-DD'), event, changeMoney, principal, interest, mcInfos[0].id]
+        )
+
+        await conn.execute(
+          `UPDATE borrow_loan_record SET principal=?, interest=? WHERE id=?`,
+          [principal, interest, blInfo.id]
+        )
+
+      } else {  // 昨天有还款，结息之类的场景
+
+        // 获取当前周期的天数，mcInfos[0]作为lastRecord, 计算到今天的利息。 根据afterCycle，今天是不是周期末，决定event。 插入 mcInfo
+        let { blid, changeOrder, principal, interest, date } = mcInfos[0]
+        const changeMoney = computeInterest({ principal, rate, periodDays, startDate: date, endDate: startOfToday })
+
+        let event = '按天生息'
+        if (isEnd) {
+          if (afterCycle === 'compound') {
+            event = '周期结息转本金'
+            principal = Number(principal) + Number(changeMoney) + Number(interest);
+            interest = 0;
+          } else {
+            event = '周期结息';
+            interest = Number(interest) + Number(changeMoney);
+          }
+        } else {
+          event = '按天生息';
+          interest = Number(interest) + Number(changeMoney);
+        }
+
+        await conn.execute(
+          `INSERT INTO money_change_record (blid, status, changeOrder, date, event, changeMoney, principal, interest) 
+          VALUES(?, ?, ?, ?, ?, ?, ?, ?);`,
+          [blid, 'DONE', changeOrder + 1, startOfToday.format('YYYY-MM-DD'), event, changeMoney, principal, interest]
+        )
+
+        await conn.execute(
+          `UPDATE borrow_loan_record SET principal=?, interest=? WHERE id=?`,
+          [principal, interest, blInfo.id]
+        )
       }
     }
 
     await conn.commit()
     await conn.release()
   } catch (e) {
+    console.log(e)
     await conn.rollback()
     await conn.release()
   }
 
-  await redis.set('computing', false, 'EX', 24 * 60 * 60)
+  await redis.set('computing', moment().format('YYYY-MM-DD HH:mm:ss'), 'EX', 24 * 60 * 60)
 }
+
+function computeInterest({ principal, rate, startDate, periodDays, endDate }) {
+  const interestStartDate = moment(startDate)
+  const interestEndDate = moment(endDate)
+  const interestDays = interestEndDate.diff(interestStartDate, 'd')
+  const cycleInterest = principal * rate / 100;
+
+  return cycleInterest * interestDays / periodDays;
+}
+
+startCompute().then(() => {
+  console.log('compute end')
+  process.exit()
+})

@@ -87,7 +87,7 @@ Page({
       wx.navigateTo({
         url: `../detail/index?id=${id}`,
       })
-    }).catch(err => app.icError(err.errMsg))
+    })
   },
 
   toggleCycleEndTips() {

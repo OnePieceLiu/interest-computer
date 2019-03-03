@@ -33,7 +33,8 @@ const request = function (options) {
   }
 
   const { header = {} } = options
-  const sessionid = getApp().globalData.sessionid
+  const app = getApp()
+  const sessionid = app.globalData.sessionid
   if (sessionid) {
     header.sessionid = sessionid
   }
@@ -46,6 +47,9 @@ const request = function (options) {
     } else {
       return res.data.data
     }
+  }).catch(err => {
+    app.icError(err.errMsg)
+    throw err;
   })
 }
 
