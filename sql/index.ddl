@@ -55,11 +55,3 @@ PRIMARY KEY(id),
 KEY(id),
 KEY(blid)
 );
-
-CREATE TABLE user_todo_count(
-  openid CHAR(64) PRIMARY KEY,
-  date DATE,
-  shouldReceive DEC(14,2),
-  shouldRepay DEC(14,2)
-  KEY(openid)
-)

@@ -35,6 +35,6 @@ module.exports = async (ctx, next) => {
       }
 
       return blInfo;
-    })
+    }).sort((a, b) => a.repaymentDate < b.repaymentDate ? -1 : 1)
   }
 }

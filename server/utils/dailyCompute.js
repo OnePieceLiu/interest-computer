@@ -18,7 +18,7 @@ async function startCompute() {
       const { loanDate, cycle, cycleUnit, rate, afterCycle } = blInfo;
 
       // 获取当前周期的天数，今天是否是周期结束日
-      const cycleNumber = startOfToday.diff(moment(loanDate), cycleUnit);
+      const cycleNumber = startOfToday.diff(moment(loanDate), cycleUnit) / cycle | 0;
       let cycleEndDate = moment(loanDate).add(cycleNumber * cycle, cycleUnit)
       const isEnd = startOfToday.isSame(cycleEndDate, 'd')
       let cycleStartDate, periodDays;
@@ -32,9 +32,16 @@ async function startCompute() {
       }
       //----- periodDays, isEnd ----------//
 
-      const [mcInfos] = await conn.execute(`SELECT * FROM money_change_record where blid=? AND status=? order by changeOrder desc limit 2`, [blInfo.id, 'DONE'])
+      // 每天凌晨结算利息的时候，不应该有date >= today 的 money_change_record, 这里去 = ，防止重算当天已有还款记录。
+      const [mcInfos] = await conn.execute(
+        `SELECT * FROM money_change_record where blid=? AND status=? AND date<=? order by changeOrder desc limit 2`,
+        [blInfo.id, 'DONE', startOfToday.format('YYYY-MM-DD')]
+      )
 
-      if (mcInfos[0].event === '按天生息') { // 昨天只发生了生息行为
+      if (moment(mcInfos[0].date).isSame(startOfToday, 'd')) {
+        // 啥也不做，金额变动记录中，有今天的记录，说明已经 计过息了
+        console.log(`blInfo ${blInfo.id} daily compute ,but lastest mcInfo happens today, id is ${mcInfos[0].id}`)
+      } else if (mcInfos[0].event === '按天生息') { // 昨天只发生了生息行为
 
         // 获取当前周期的天数，mcInfos[1]作为lastRecord, 计算到今天的利息。 根据afterCycle，今天是不是周期末，决定event。 更新 mcInfos[0]
         let { principal, interest, date } = mcInfos[1]
@@ -111,8 +118,13 @@ async function startCompute() {
 }
 
 function computeInterest({ principal, rate, startDate, periodDays, endDate }) {
+  console.log(startDate, endDate, periodDays)
+
   const interestStartDate = moment(startDate)
   const interestEndDate = moment(endDate)
+
+  console.log(interestStartDate, interestEndDate);
+
   const interestDays = interestEndDate.diff(interestStartDate, 'd')
   const cycleInterest = principal * rate / 100;
 

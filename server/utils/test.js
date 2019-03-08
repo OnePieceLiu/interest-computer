@@ -19,31 +19,31 @@ const moment = require('moment')
 // })
 
 
-const startOfToday = moment().startOf('day')
+// const startOfToday = moment().startOf('day')
 
-const loanDate = '2019-02-03'
-const cycle = 1
-const cycleUnit = 'M'
+// const loanDate = '2019-02-03'
+// const cycle = 1
+// const cycleUnit = 'M'
 
-const cycleNumber = startOfToday.diff(moment(loanDate), cycleUnit);
-let cycleEndDate = moment(loanDate).add(cycleNumber * cycle, cycleUnit)
-const isEnd = startOfToday.isSame(cycleEndDate, 'd')
-let cycleStartDate, periodDays;
-if (isEnd) {
-  cycleStartDate = moment(cycleEndDate).add(-1 * cycle, cycleUnit)
-  periodDays = cycleEndDate.diff(cycleStartDate, 'd')
-} else {
-  cycleStartDate = cycleEndDate;
-  cycleEndDate = moment(cycleEndDate).add(1 * cycle, cycleUnit)
-  periodDays = cycleEndDate.diff(cycleStartDate, 'd')
-}
+// const cycleNumber = startOfToday.diff(moment(loanDate), cycleUnit);
+// let cycleEndDate = moment(loanDate).add(cycleNumber * cycle, cycleUnit)
+// const isEnd = startOfToday.isSame(cycleEndDate, 'd')
+// let cycleStartDate, periodDays;
+// if (isEnd) {
+//   cycleStartDate = moment(cycleEndDate).add(-1 * cycle, cycleUnit)
+//   periodDays = cycleEndDate.diff(cycleStartDate, 'd')
+// } else {
+//   cycleStartDate = cycleEndDate;
+//   cycleEndDate = moment(cycleEndDate).add(1 * cycle, cycleUnit)
+//   periodDays = cycleEndDate.diff(cycleStartDate, 'd')
+// }
 
-console.log(startOfToday)
-console.log(cycleNumber)
-console.log(isEnd)
-console.log(cycleStartDate)
-console.log(cycleEndDate)
-console.log(periodDays)
+// console.log(startOfToday)
+// console.log(cycleNumber)
+// console.log(isEnd)
+// console.log(cycleStartDate)
+// console.log(cycleEndDate)
+// console.log(periodDays)
 
 // console.log(a, b, c)
 
@@ -57,3 +57,30 @@ console.log(periodDays)
 
 // const a = nFormatter(Number('0.00') + Number('0.00'))
 // console.log(a)
+
+
+function computeInterest({ principal, rate, startDate, periodDays, endDate }) {
+  console.log(startDate, endDate, periodDays)
+
+  const interestStartDate = moment(startDate)
+  const interestEndDate = moment(endDate)
+
+  console.log(interestStartDate, interestEndDate);
+  const interestDays = interestEndDate.diff(interestStartDate, 'd')
+  const cycleInterest = principal * rate / 100;
+
+  return cycleInterest * interestDays / periodDays;
+}
+
+const interest = computeInterest({
+  principal: 500000,
+  rate: 8.8,
+  startDate: '2016-03-06',
+  endDate: '2019-03-05',
+  periodDays: moment('2019-03-06').diff(moment('2016-03-06'), 'd')
+})
+
+console.log('interest', interest)
+
+
+// console.log(moment(moment().format('YYYY-MM-DD')), moment().startOf('day'))

@@ -29,8 +29,8 @@
   top:5px;
   right:50px;
   border-radius:50%;
-  border:1px solid #1AAD16;
-  color:#1AAD16;
+  border:1px solid #ff4400;
+  color:#ff4400;
   transform:rotate(-30deg);
   width:50px;
   height:50px;

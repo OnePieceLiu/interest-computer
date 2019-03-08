@@ -13,7 +13,7 @@ module.exports = async (ctx, next) => {
   )
 
   const [todo] = await conn.execute(
-    `SELECT * FROM money_change_record where blid=? AND status=? order by createTime asc limit 50`,
+    `SELECT * FROM money_change_record where blid=? AND status=? order by date asc limit 50`,
     [blid, 'WAIT_CONFIRM']
   )
 

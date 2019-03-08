@@ -3,14 +3,15 @@
   border-bottom: 1px solid #e5e5e5;
 }
 
-.same-width-font{
+/* .same-width-font{
   font-family: TrebuchetMS,Rotobo,"Courier New", Courier,monospace;
-}
+} */
 
 .time-event-amount{
   padding: 3px 0;
   display: flex;
   justify-content: space-between;
+  font-family: TrebuchetMS,Rotobo,"Courier New", Courier,monospace;
 }
 
 .icon-down{

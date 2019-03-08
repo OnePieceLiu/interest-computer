@@ -38,5 +38,7 @@
       <view class="detail-item-value">{{blInfo.repaymentType}}</view>
     </view>
   </view>
-  <view class="status">{{blInfo.statusZh}}</view>
+  <view wx:if="{{blInfo.status === 'CLOSED' || blInfo.status === 'FINISHED'}}" class="status">
+    {{blInfo.statusZh}}
+  </view>
 </view>

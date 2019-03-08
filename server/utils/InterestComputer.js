@@ -44,7 +44,7 @@ class InterestComputer {
 
   // 计算出一个包含 changeDate的周期。 cycleStartDate <= changeDate < cycleEndDate
   computePeriod() {
-    const cycleNumber = this.changeDate.diff(this.loanDate, this.cycleUnit)
+    const cycleNumber = this.changeDate.diff(this.loanDate, this.cycleUnit) / this.cycle | 0;
 
     // moment().add方法是修改moment对象，所以需要新创建 moment对象再add
     this.cycleStartDate = moment(this.loanDate).add(cycleNumber * this.cycle, this.cycleUnit)
