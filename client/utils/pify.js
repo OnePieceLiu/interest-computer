@@ -28,8 +28,8 @@ const pify = function (api) {
 
 const request = function (options) {
   if (options.url.startsWith('/')) {
-    // options.url = `https://tencent.zhoupengqiang.cn${options.url}`
-    options.url = `http://192.168.1.5:8765${options.url}`
+    options.url = `https://tencent.zhoupengqiang.cn${options.url}`
+    // options.url = `http://192.168.1.5:8765${options.url}`
   }
 
   const { header = {} } = options

@@ -8,7 +8,7 @@ module.exports = async (ctx, next) => {
 
   if (whiteLists.some(a => a === ctx.path)) return await next()
 
-  if (env === 'dev' && openid) {  // postman 调试
+  if (env === 'development' && openid) {  // postman 调试
     ctx.openid = openid
   } else {
     const sessionStr = await redis.get(sessionid)
