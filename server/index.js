@@ -30,5 +30,6 @@ files.forEach(file => {
 app.use(router.routes()).use(router.allowedMethods())
 
 app.listen(8765, () => {
+  require('./utils/cronJobs/index') //启动定时任务
   console.log('app is running at port 8765!')
 })

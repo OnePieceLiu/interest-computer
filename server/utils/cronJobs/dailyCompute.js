@@ -1,5 +1,5 @@
-const { redis } = require('./redis.js')
-const { pool } = require('./mysql')
+const { redis } = require('../redis.js')
+const { pool } = require('../mysql')
 const moment = require('moment')
 
 async function startCompute() {
@@ -114,7 +114,7 @@ async function startCompute() {
     await conn.release()
   }
 
-  await redis.set('computing', moment().format('YYYY-MM-DD HH:mm:ss'), 'EX', 24 * 60 * 60)
+  await redis.set('computing', 'false', 'EX', 24 * 60 * 60)
 }
 
 function computeInterest({ principal, rate, startDate, periodDays, endDate }) {
@@ -131,7 +131,6 @@ function computeInterest({ principal, rate, startDate, periodDays, endDate }) {
   return cycleInterest * interestDays / periodDays;
 }
 
-startCompute().then(() => {
-  console.log('compute end')
-  process.exit()
-})
+module.exports = {
+  startCompute
+}

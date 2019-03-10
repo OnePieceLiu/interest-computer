@@ -19,6 +19,7 @@
   "homepage": "https://github.com/zhoupengqiang/interest-computer#readme",
   "dependencies": {
     "axios": "^0.18.0",
+    "cron": "^1.6.0",
     "ioredis": "^4.6.2",
     "koa": "^2.7.0",
     "koa-bodyparser": "^4.2.1",
