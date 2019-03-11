@@ -108,10 +108,11 @@ async function startCompute() {
 
     await conn.commit()
     await conn.release()
-  } catch (e) {
-    console.log(e)
+  } catch (err) {
+    console.log(err)
     await conn.rollback()
     await conn.release()
+    throw new Error(err.message)
   }
 
   await redis.set('computing', 'false', 'EX', 24 * 60 * 60)
