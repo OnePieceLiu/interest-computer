@@ -103,7 +103,7 @@ Page({
     const blid = this.data.id;
     const { date, amount } = this.data.values;
 
-    if (amount <= 0) {
+    if (!amount) {
       app.icError('还款金额必须大于0')
       return
     }
