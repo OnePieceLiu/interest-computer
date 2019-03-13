@@ -1,8 +1,9 @@
 module.exports = async function (ctx, next) {
+  const { method, path, query, request: { body } } = ctx
   try {
     await next();
   } catch (err) {
-    console.error(err)
+    console.error(method, path, query, body, err)
     ctx.type = "json"
     ctx.body = {
       code: err.status || 500,

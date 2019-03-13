@@ -7,4 +7,8 @@
       <button>记录借出</button>
     </navigator>
   </view>
+  <view class="contact">
+    <image src="https://tencent.zhoupengqiang.cn/wx_group.jpg" mode="aspectFit"></image>
+    吐槽反馈群
+  </view>
 </global>

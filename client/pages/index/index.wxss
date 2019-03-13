@@ -4,3 +4,8 @@
   display: flex;
   justify-content: space-around;
 }
+
+.contact {
+  text-align: center;
+  color: #666;
+}
