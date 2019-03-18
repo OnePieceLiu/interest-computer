@@ -6,7 +6,7 @@ module.exports = async (ctx, next) => {
 
   const conn = await pool.getConnection()
   const [[row]] = await conn.execute(`SELECT * FROM borrow_loan_record where id=?`, [query.id])
-  const { id, loanDate, cycle, cycleUnit, loanAmount, rate, principal, interest, afterCycle, repaymentType, loaner, debtor, sponsor, status } = row
+  const { id, loanDate, cycle, cycleUnit, loanAmount, rate, yearRate, principal, interest, afterCycle, repaymentType, loaner, debtor, sponsor, status } = row
   const loanerP = loaner ? conn.execute(`SELECT nickName, avatarUrl from wx_user where openid=?`, [loaner]) : Promise.resolve([[]])
   const debtorP = debtor ? conn.execute(`SELECT nickName, avatarUrl from wx_user where openid=?`, [debtor]) : Promise.resolve([[]])
   const [[[loanerInfo]], [[debtorInfo]]] = await Promise.all([loanerP, debtorP])
@@ -37,6 +37,7 @@ module.exports = async (ctx, next) => {
       overdue: today > repaymentDate && status === 'CREATED',
       loanAmount,
       rate,
+      yearRate,
       totalAmount: (Number(principal) + Number(interest)).toFixed(2),
       afterCycle,
       repaymentType,

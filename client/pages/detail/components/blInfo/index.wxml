@@ -20,8 +20,9 @@
       <view class="detail-item-value">{{blInfo.loanAmount}}元</view>
     </view>
     <view class="detail-item">
-      <view class="detail-item-title">借贷利率：</view>
+      <view class="detail-item-title">约定利率：</view>
       <view class="detail-item-value">{{blInfo.rate}}%</view>
+      <view wx:if="{{blInfo.yearRate}}" class="extra-tips">(年化{{blInfo.yearRate}}%)</view>
     </view>
     <view class="detail-item">
       <view class="detail-item-title">

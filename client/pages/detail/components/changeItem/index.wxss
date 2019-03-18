@@ -8,10 +8,14 @@
 } */
 
 .time-event-amount{
-  padding: 3px 0;
+  padding: 4px 0 3px;
   display: flex;
   justify-content: space-between;
-  font-family: TrebuchetMS,Rotobo,"Courier New", Courier,monospace;
+  font-family: Arial, Helvetica, sans-serif, monospace,TrebuchetMS,Rotobo,"Courier New",Courier;
+}
+
+.money-unit{
+  font-size: 13px;
 }
 
 .icon-down{

@@ -48,7 +48,10 @@ const request = function (options) {
       return res.data.data
     }
   }).catch(err => {
-    app.icError(err.errMsg)
+    wx.showToast({
+      title: err.errMsg,
+      icon: 'none'
+    })
     throw err;
   })
 }

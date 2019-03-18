@@ -24,12 +24,14 @@ Page({
       loanAmount: undefined,
       rate: undefined,
       repaymentAmount: undefined,
+      yearRate: undefined,
 
       afterCycle: 'compound',
       repaymentType: 'interestFirst'
     },
 
     mv: {
+      yearRate: false,
       afterCycle: false,
       repaymentType: false
     }
@@ -46,34 +48,34 @@ Page({
   },
 
   bindLoanDateChange: syncFieldToData('loanDate', computeRepaymentDate),
-  bindCycleChange: syncFieldToData('cycle', computeRepaymentDate),
-  bindCycleUnitChange: syncFieldToData('cycleUnit', computeRepaymentDate),
+  bindCycleChange: syncFieldToData('cycle', [computeRepaymentDate, computeRepaymentYearRate]),
+  bindCycleUnitChange: syncFieldToData('cycleUnit', [computeRepaymentDate, computeRepaymentYearRate]),
 
   bindLoanAmountChange: syncFieldToData('loanAmount', computeRepaymentAmount),
-  bindRateChange: syncFieldToData('rate', computeRepaymentAmount),
+  bindRateChange: syncFieldToData('rate', [computeRepaymentAmount, computeRepaymentYearRate]),
 
-  bindAfterCycleChange: syncFieldToData('afterCycle'),
+  bindAfterCycleChange: syncFieldToData('afterCycle', computeRepaymentYearRate),
   bindRepaymentTypeChange: syncFieldToData('repaymentType'),
 
   formSubmit(e) {
     const { loanDate, cycle, cycleUnit,
-      loanAmount, rate, afterCycle, repaymentType
+      loanAmount, rate, yearRate, afterCycle, repaymentType
     } = this.data.values
 
     const sponsor = this.data.type === 'loan' ? 'loaner' : 'debtor';
 
     if (!cycle) {
-      app.icError('请填写1～100的借贷周期，可以切换单位！')
+      wx.showToast({ title: '请填写1～100的借贷周期，可以切换单位！', icon: 'none' })
       return
     }
 
     if (!loanAmount) {
-      app.icError('请填写>0的借贷金额，最多两位小数！')
+      wx.showToast({ title: '请填写>0的借贷金额，最多两位小数！', icon: 'none' })
       return
     }
 
     if (!rate) {
-      app.icError('请填写利率，最多两位小数！')
+      wx.showToast({ title: '请填写利率，最多两位小数！', icon: 'none' })
       return
     }
 
@@ -81,12 +83,19 @@ Page({
       url: '/record',
       method: 'POST',
       data: {
-        loanDate, cycle, cycleUnit, loanAmount, rate, afterCycle, repaymentType, sponsor
+        loanDate, cycle, cycleUnit, loanAmount, rate, yearRate, afterCycle, repaymentType, sponsor
       }
     }).then(id => {
       wx.navigateTo({
         url: `../detail/index?id=${id}`,
       })
+    })
+  },
+
+  toggleYearRateTips(){
+    const { yearRate } = this.data.mv;
+    this.setData({
+      'mv.yearRate': !yearRate
     })
   },
 
@@ -106,7 +115,7 @@ Page({
 })
 
 
-function syncFieldToData(fieldName, callback) {
+function syncFieldToData(fieldName, callbacks) {
   const numberFields = ["cycle", "loanAmount", "rate"]
 
   return function (e) {
@@ -119,7 +128,10 @@ function syncFieldToData(fieldName, callback) {
 
     this.setData({
       [`values.${fieldName}`]: value
-    }, callback)
+    }, ()=>{
+      const cbs = [].concat(callbacks)
+      cbs.forEach(cb=> typeof cb === 'function' && cb.apply(this))
+    })
   }
 }
 
@@ -147,6 +159,32 @@ function computeRepaymentAmount() {
   if (loanAmount && rate) {
     this.setData({
       'values.repaymentAmount': parseInt(loanAmount * (100 + rate)) / 100
+    })
+  }
+}
+
+function computeRepaymentYearRate(){
+  const {cycle, cycleUnit, rate, afterCycle} = this.data.values
+  if (cycle && cycleUnit && rate && afterCycle){
+    let yearAmount = 0
+    let yearRate = 0
+    switch (cycleUnit) {
+      case 'y': yearAmount = cycle ; break;
+      case 'M': yearAmount = cycle / 12; break;
+      case 'w': yearAmount = cycle / 52; break;
+      case 'd': yearAmount = cycle / 365; break;
+      default: break;
+    }
+
+    if (afterCycle === 'principal'){
+      yearRate = rate / yearAmount
+    }else{
+      // 复利和默认还清都是算复利
+      yearRate = (Math.pow(1 + rate / 100, 1 / yearAmount) - 1) * 100
+    }
+
+    this.setData({
+      'values.yearRate': (yearRate * 100 | 0)/100
     })
   }
 }

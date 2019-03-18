@@ -104,7 +104,7 @@ Page({
     const { date, amount } = this.data.values;
 
     if (!amount) {
-      app.icError('还款金额必须大于0')
+      wx.showToast({ title: '还款金额必须大于0', icon: 'none' })
       return
     }
 
@@ -158,16 +158,19 @@ Page({
       }
     }
 
-    return { 
+    return {
       title,
-      success: function(e){
+      success: function (e) {
         console.log('abc', e)
         wx.redirectTo({
           url: '/pages/index/index'
         })
       },
-      fail: function(e){
-        app.icInfo('分享失败，请检查网络！')
+      fail: function (e) {
+        wx.showToast({
+          title: '分享失败，请检查网络！',
+          icon: 'none'
+        })
       }
     }
   }
@@ -177,7 +180,7 @@ Page({
 
 function syncFieldToData(fieldName, callback) {
   const numberFields = ["amount"]
-  
+
   return function (e) {
     let value = e.detail.value;
     if (value === '') return;

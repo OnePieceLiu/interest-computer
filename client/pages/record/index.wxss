@@ -1,14 +1,14 @@
 /* pages/record/index.wxss */
 .record-form{
   display: block;
-  padding: 20rpx 50rpx;
+  padding: 20rpx 0;
 }
 
 .record-form-item {
   display: flex;
   justify-content: space-between;
   align-items: top;
-  padding: 20rpx 0;
+  padding: 20rpx 50rpx;
 }
 
 .record-form-item-title{
@@ -68,6 +68,17 @@
 
 .form-input-radio{
   display: block;
+}
+
+.compute-result{
+  margin: 5px 50rpx;
+  padding: 5px 20rpx;
+  border: 1px dashed #ccc;
+  line-height: 1.4;
+}
+
+.btn-area{
+  padding: 0 50rpx;
 }
 
 .example{

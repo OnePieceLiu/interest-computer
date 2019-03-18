@@ -9,6 +9,11 @@
   display: flex;
 }
 
+.extra-tips{
+  color: #ff4400;
+  margin-left: 10rpx;
+}
+
 .ib{
   display: inline-block;
   vertical-align: middle;

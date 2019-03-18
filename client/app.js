@@ -4,15 +4,43 @@ const { login, request, getSetting, getUserInfo } = require('./utils/pify')
 //app.js
 App({
   onLaunch: function () {
+    this.checkUpdate();
     this.loginP = this.login();
     this.userInfoP = this.getUserInfo()
 
     Promise.all([this.loginP, this.userInfoP])
-      .then(() => this.recordAccess(), err => console.log('err', err))
+      .then(() => this.recordAccess())
   },
 
-  onError: function(e){
-    console.log('app on error', e)
+  checkUpdate: function () {
+    const updateManager = wx.getUpdateManager()
+
+    updateManager.onCheckForUpdate(function (res) {
+      // 请求完新版本信息的回调
+      console.log(res.hasUpdate)
+    })
+
+    updateManager.onUpdateReady(function () {
+      wx.showModal({
+        title: '更新提示',
+        content: '新版本已经准备好，是否重启应用？',
+        success(res) {
+          if (res.confirm) {
+            // 新的版本已经下载好，调用 applyUpdate 应用新版本并重启
+            updateManager.applyUpdate()
+          }
+        }
+      })
+    })
+
+    updateManager.onUpdateFailed(function () {
+      // 新版本下载失败
+      wx.showModal({
+        title: '更新提示',
+        content: '新版本下载失败',
+        showCancel: false
+      });
+    })
   },
 
   // 登录

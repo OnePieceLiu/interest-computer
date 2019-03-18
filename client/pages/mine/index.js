@@ -9,7 +9,7 @@ Page({
    */
   data: {
     type: 'borrow',
-    status: 'CREATED',
+    status: '',
     statusOpts: [{name: '全部', value: ''}].concat(blStatus),
     list: {
       offset: 0,

@@ -55,3 +55,5 @@ PRIMARY KEY(id),
 KEY(id),
 KEY(blid)
 );
+
+ALTER TABLE borrow_loan_record ADD yearRate DEC(6, 2) after rate;

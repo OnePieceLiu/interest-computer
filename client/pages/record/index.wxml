@@ -16,10 +16,6 @@
         <select class="form-input-select-unit" options="{{cycleUnits}}" value="{{values.cycleUnit}}" bind:change="bindCycleUnitChange" />
       </view>
     </view>
-    <view class="record-form-item bb1px66 bgcf0" wx:if="{{values.loanDate && values.cycle}}">
-      <view class="record-form-item-title">还款日期：</view>
-      <view class="record-form-item-input">{{values.repaymentDate}}</view>
-    </view>
     <view class="record-form-item">
       <view class="record-form-item-title">借贷金额：</view>
       <view class="record-form-item-input bb1pxe5">
@@ -28,15 +24,16 @@
       </view>
     </view>
     <view class="record-form-item">
-      <view class="record-form-item-title">借贷利率：</view>
+      <view class="record-form-item-title">约定利率：</view>
       <view class="record-form-item-input bb1pxe5">
         <input class="form-input-before-unit" type="digit" value="{{values.rate}}" bindblur="bindRateChange" />
         <text class="form-input-unit">%</text>
       </view>
     </view>
-    <view class="record-form-item bb1px66 bgcf0" wx:if="{{values.loanAmount && values.rate}}">
-      <view class="record-form-item-title">还款金额：</view>
-      <view class="record-form-item-input">{{values.repaymentAmount}} 元</view>
+    <view class="compute-result" wx:if="{{values.cycle && values.loanAmount && values.rate}}">
+      <view>{{values.repaymentDate}} 还钱 {{values.repaymentAmount}}元</view>
+      <view>年化利率为 <text style="color:#ff4400;">{{values.yearRate}}%</text></view>
+      <!-- <view>日息 <text style="color:#ff4400;">{{values.yearRate}}元</text></view> -->
     </view>
     <view class="record-form-item">
       <view class="record-form-item-title">
@@ -66,6 +63,12 @@
       <button form-type="submit" type="primary">提交</button>
     </view>
   </form>
+
+  <modal wx:if="{{mv.yearRate}}">
+
+    <button type="primary" bindtap="toggleYearRateTips">确定</button>
+  </modal>
+
   <modal wx:if="{{mv.afterCycle}}">
     <view class="example">例如，到了还款日期，剩余应还本金10000，应还利息500。</view>
     <view class="options-explain">
@@ -75,6 +78,7 @@
     </view>
     <button type="primary" bindtap="toggleCycleEndTips">确定</button>
   </modal>
+
   <modal wx:if="{{mv.repaymentType}}">
     <view class="example">例如，当前应还本金9000，应还利息1000，提前还款5000。</view>
     <view class="options-explain">
