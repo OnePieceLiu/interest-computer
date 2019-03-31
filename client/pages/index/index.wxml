@@ -8,7 +8,8 @@
     </navigator>
   </view>
   <view class="contact">
-    <image src="{{url}}"></image>
     <view>吐槽反馈群</view>
+    <view style="margin-bottom: 5px;">小程序无法长按识别，请先保存</view>
+    <image src="{{url}}" mode="aspectFit"></image>
   </view>
 </global>
