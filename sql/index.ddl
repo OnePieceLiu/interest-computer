@@ -57,3 +57,10 @@ KEY(blid)
 );
 
 ALTER TABLE borrow_loan_record ADD yearRate DEC(6, 2) after rate;
+
+CREATE TABLE static_assets (
+id INT PRIMARY KEY AUTO_INCREMENT,
+code CHAR(64),
+url CHAR(255)
+);
+
