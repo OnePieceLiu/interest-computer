@@ -1,7 +1,7 @@
 const { redis } = require('../utils/redis.js')
 const env = process.env.NODE_ENV
 
-const whiteLists = ['/login']
+const whiteLists = ['/login', '/getAssets']
 
 module.exports = async (ctx, next) => {
   const { sessionid, openid } = ctx.headers
